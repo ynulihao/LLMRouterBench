@@ -1,0 +1,272 @@
+# GraphRouter: A Graph-based Router for LLM Selections
+
+<p align="center">
+    <a href="https://ulab-uiuc.github.io/GraphRouter/">
+        <img alt="Build" src="https://img.shields.io/badge/Project-Page-blue">
+    </a>
+    <a href="http://arxiv.org/abs/2410.03834">
+        <img alt="Build" src="https://img.shields.io/badge/arXiv-2410.11001-red?logo=arxiv">
+    </a>
+    <a href="https://x.com/taofeng_uiuc/status/1914914682860695559">
+        <img alt="Build" src="https://img.shields.io/badge/Twitter-black?logo=X">
+    </a>
+    <a href="https://github.com/ulab-uiuc/GraphRouter/blob/master/LICENSE">
+        <img alt="License" src="https://img.shields.io/badge/LICENSE-MIT-green">
+    </a>
+    <br>
+    <a href="https://github.com/ulab-uiuc/GraphRouter">
+        <img alt="Build" src="https://img.shields.io/github/stars/ulab-uiuc/GraphRouter">
+    </a>
+    <a href="https://github.com/ulab-uiuc/GraphRouter">
+        <img alt="Build" src="https://img.shields.io/github/forks/ulab-uiuc/GraphRouter">
+    </a>
+    <a href="https://github.com/ulab-uiuc/GraphRouter">
+        <img alt="Build" src="https://img.shields.io/github/issues/ulab-uiuc/GraphRouter">
+    </a>
+</p>
+
+
+<p align="center">
+    <a href="https://ulab-uiuc.github.io/GraphRouter/">🌐 Project Page</a> |
+    <a href="http://arxiv.org/abs/2410.03834">📜 arXiv</a> |
+    <a href="https://x.com/taofeng_uiuc/status/1914914682860695559">📮 Twitter Post</a>
+<p>
+
+
+<!-- ![Method](./figures/model.png) -->
+
+<div align="center">
+  <img src="./figures/model.png" width="700" alt="GoR">
+</div>
+
+
+
+## News
+
+**[2025.08.20]** 🚀 **FusionFactory** & **FusionBench** are here! Most LLM apps still rely on a single model — limiting capability & wasting tokens. **FusionBench** (14 tasks, 5 domains, 20 LLMs, 103M tokens) + **FusionFactory** (query-, thought-, and model-level fusion) unlock powerful multi-LLM collaboration. ✅ Results: FusionFactory consistently outperforms the best single LLM across 14 benchmarks. 📄 [Paper](https://arxiv.org/pdf/2507.10540?) | 💻 [Code](https://github.com/ulab-uiuc/FusionFactory) | 🐦 [Twitter](https://x.com/taofeng_uiuc)
+
+**[2025.06.18]** 🔥 **Router-R1** has officially been released, which is a cutting-edge, reinforcement learning-driven LLM router designed to enable seamless collaboration among multiple LLMs to tackle complex problems efficiently. Explore the project and get started here: [Router-R1](https://github.com/ulab-uiuc/Router-R1). Stay updated with the latest news and developments by following us on [Twitter](https://x.com/taofeng_uiuc)!
+
+📊 We also benchmark GraphRouter on the collected [router dataset](https://huggingface.co/datasets/ulab-ai/Router-R1-Router-Dataset) in Router-R1, demonstrating its strong performance across multiple QA benchmarks under different LLM settings.
+
+📈 **GraphRouter Results on [Router Dataset](https://huggingface.co/datasets/ulab-ai/Router-R1-Router-Dataset) from Router-R1**
+| Base Model                     | NQ<sup>†</sup>   | TriviaQA | PopQA | HotpotQA<sup>†</sup> | 2WikiMultiHopQA | Musique | Bamboogle  | Avg.  |
+| ------------------------- | ----- | -------- | ----- | ----- | ----- | ------- | ----- | ----- |
+| **Qwen2.5-3B-Instruct**   | 0.276 | 0.586    | 0.280 | 0.234 | 0.180 | 0.076   | 0.448 | 0.297 |
+| **Llama-3.2-3B-Instruct** | 0.316 | 0.602    | 0.290 | 0.222 | 0.170 | 0.084   | 0.416 | 0.300 |
+
+- <sup>†</sup> indicates in-domain evaluation; all others are out-of-domain.
+
+- Evaluation Metric: Exact Match
+
+- LLM Routing Pool: Qwen2.5-7B-Instruct, LLaMA-3.1-8B-Instruct, LLaMA-3.1-70B-Instruct, Mistral-7B-Instruct, Mixtral-8x22B-Instruct, Gemma-2-27B-Instruct
+
+
+
+🎯 The fine-tuned weights for GraphRouter on this dataset are now released at `model_path/best_model_qa.pth`
+
+
+**[2025.01.22]** 🌟 **GraphRouter** is accepted for ICLR 2025.
+
+
+
+## 📌Preliminary
+
+
+### Environment Setup
+
+```shell
+# create a new environment
+conda create -n graphrouter python=3.10
+conda activate graphrouter
+
+# install pytorch. Modify the command to align with your own CUDA version.
+pip3 install torch  --index-url https://download.pytorch.org/whl/cu118
+
+# install related libraries
+pip install -r requirements.txt
+
+
+# install pyg
+pip install torch_geometric
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
+
+```
+
+### Dataset Preparation
+
+First, generate 'data/unified_qa_data.csv'.
+
+```bash
+python data_processing/multidata_unify.py
+```
+Then, generate `data/router_data.csv` and `configs/llm_description_embedding.pkl` by setting your api_key in `configs/config.yaml`.
+
+```bash
+python data_processing/construct_router_data.py
+```
+
+For your convenience, we provide download links for the 'unified_qa_data.csv' and 'router_data.csv' files we generated. Please download them and put them in `data` folder.
+
+[unified_qa_data.csv](https://drive.google.com/file/d/1__SY7UScvX1xPWeX1NK6ZulLMdZTqBcI/view?usp=share_link)
+[router_data.csv](https://drive.google.com/file/d/1YYn-BV-5s2amh6mKLqKMR0H__JB-CKU4/view?usp=share_link)
+
+## ⭐Experiments
+
+
+### Training and Evaluation
+
+Run experiments and print/save evaluation results on metrics Performance, Cost, and Reward. You can edit the hyperparameters in `configs/config.yaml` or using your own config_file.
+
+
+```bash
+python run_exp.py --config_file [config]
+```
+
+### Tricks for Adapting GraphRouter to Other Tasks and Datasets
+
+1. **Embedding Normalization**  
+   - Check whether input embeddings are normalized.  
+   - On some datasets, skipping normalization leads to suboptimal results.  
+
+2. **Network Initialization**  
+   - Experiment with different initialization methods.  
+   - Try varying random seeds or using alternative initialization schemes.  
+
+3. **Model Saving Strategy**  
+   - Instead of saving models based on highest accuracy, save checkpoints with the best evaluation set performance.  
+   - This can yield better results on certain tasks.  
+
+4. **Learning Rate Tuning**  
+   - Adjust learning rate carefully.  
+   - Slightly increasing it may help avoid local optima and improve stability.  
+
+
+
+## Citation
+
+```bibtex
+@inproceedings{feng2024graphrouter,
+  title={Graphrouter: A graph-based router for llm selections},
+  author={Feng, Tao and Shen, Yanzhen and You, Jiaxuan},
+  booktitle={The Thirteenth International Conference on Learning Representations},
+  year={2024}
+}
+```
+
+---
+
+## Modifications for OpenRouterBench Integration
+
+### Train/Validation/Test Split Logic
+
+**Date**: 2025-10-16
+
+**Modified File**: `model/multi_task_graph_router.py` - `split_data()` method
+
+**Reason for Modification**:
+
+The original GraphRouter implementation assumed data was uniformly distributed across tasks and used simple row-based indexing for splitting. This caused issues when:
+
+1. Different datasets have varying numbers of samples
+2. Data from different tasks are stored consecutively in the CSV
+3. The `task_id` column in the CSV was completely ignored
+
+This led to incorrect train/test splits where samples from the same dataset could appear in both training and testing sets, causing data leakage.
+
+**Changes Made**:
+
+- Modified `split_data()` to group data by the `task_id` column in the CSV
+- Each real task (dataset) is now split independently using the configured `split_ratio` (70%/10%/20%)
+- Removed dependency on the `num_task` config parameter (now inferred from data)
+- Commented out `num_task` in `configs/config.yaml` as it is no longer needed
+- All other logic (label generation, mask creation, edge construction) remains unchanged
+
+**Benefits**:
+
+- ✅ Prevents data leakage between train/test sets
+- ✅ Each dataset maintains its integrity during splitting
+- ✅ More robust for datasets with varying sample sizes
+- ✅ Respects the semantic meaning of `task_id` in the data
+
+**Example Split Result** (for OpenRouterBench data):
+
+```
+Dataset         Queries  Train Q  Val Q  Test Q  Train Rows  Val Rows  Test Rows
+aime                 60       42      6      12         294       42         84
+gpqa                198      138     19      41         966      133        287
+hle                 500      350     50     100        2450      350        700
+livecodebench      1055      738    105     212        5166      735       1484
+simpleqa            500      350     50     100        2450      350        700
+-----------------------------------------------------------------------------------
+Total              2313     1618    230     465       11326     1610       3255
+
+Note: Each query corresponds to 7 rows (7 model evaluations), ensuring all
+row counts are divisible by 7 for proper tensor reshaping during training.
+```
+
+**Backward Compatibility**:
+
+- The modification does not affect the training process or model architecture
+- Only the data splitting logic is changed
+- If your data is already uniformly distributed and properly ordered, results should be similar
+- For heterogeneous multi-dataset scenarios (like OpenRouterBench), this fix is essential
+
+---
+
+### Multi-Positive Label for Tied Optimal LLMs
+
+**Date**: 2025-10-16
+
+**Modified File**: `model/multi_task_graph_router.py` - `split_data()` method (label generation)
+
+**Problem Identified**:
+
+Data analysis revealed that **87.38%** of queries have tied optimal LLMs:
+- 40.99% of queries: all 7 models tied (effect = 0.0)
+- Only 12.62% of queries: unique optimal LLM
+
+The original implementation used `np.argmax()` which:
+- Always selects the first occurrence when ties exist
+- Creates systematic bias toward low-index models (41% of labels forced to model 0)
+- Discards information about "multiple equally good models"
+
+**Original Behavior** (line 103):
+```python
+self.label = np.eye(self.num_llms)[np.argmax(effect_re, axis=1)].reshape(-1, 1)
+```
+
+Example issues:
+- Query `[0.5, 0.5, 0.3, 0.3]` → Label `[1, 0, 0, 0]` ❌ (model 1 also optimal)
+- Query `[0.0, 0.0, 0.0, 0.0]` → Label `[1, 0, 0, 0]` ❌ (all equally bad)
+
+**Changes Made**:
+
+Replaced one-hot labels with multi-hot labels:
+```python
+row_max = effect_re.max(axis=1, keepdims=True)
+ties = np.isclose(effect_re, row_max, rtol=0.0, atol=1e-8)
+self.label = ties.astype(np.float32).reshape(-1, 1)
+```
+
+Example improvements:
+- Query `[0.5, 0.5, 0.3, 0.3]` → Label `[1, 1, 0, 0]` ✅
+- Query `[0.0, 0.0, 0.0, 0.0]` → Label `[1, 1, 1, 1]` ✅
+
+**Benefits**:
+
+- ✅ Eliminates systematic bias toward low-index models
+- ✅ Preserves information about all optimal choices
+- ✅ More accurate training signal (87% of queries benefit)
+- ✅ No change needed to loss function (BCE still works for multi-label)
+- ✅ No change to inference (argmax still selects from optimal set)
+
+**Impact on Performance**:
+
+This addresses the root cause of GraphRouter performing worse than random selection: the training labels were systematically biased and inconsistent with the true optimal set.
+
+
+<!-- <picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ulab-uiuc%2FGraphEval&theme=dark&type=Date">
+<img width="100%" src="https://api.star-history.com/svg?repos=ulab-uiuc%2FGraphEval&type=Date">
+</picture> -->

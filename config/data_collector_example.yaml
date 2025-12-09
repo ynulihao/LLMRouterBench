@@ -1,0 +1,177 @@
+###############################################
+# OpenRouterBench Data Collector Config (Annotated)
+###############################################
+#
+# Usage
+# - This file is the single source of truth for the data collector configuration. Every field is documented with options and meaning.
+#
+# Environment variable substitution (important)
+# - For fields like api_key: if the value equals an environment variable name (e.g., OPENROUTER_API_KEY), it will be resolved from the environment automatically.
+#   See _resolve_env_var in data_collector/config_loader.py.
+#
+# Cost accounting
+# - If the upstream response provides usage.cost, that value is used.
+# - Otherwise, costs are estimated per million tokens via pricing.prompt_price_per_million and pricing.completion_price_per_million.
+#   See generators/generator.py::_calculate_cost.
+
+
+###############################
+# 1) Model Configuration (required)
+###############################
+# - This is a list; multiple models are supported. Each model is run against all target dataset×split combinations.
+# - Fields and options:
+#   - name (string, required): Used as the folder name and run_key identifier in results. Must not contain "/".
+#   - api_model_name (string, required): Provider model name/ID to call, e.g.,
+#       openai/gpt-4o-mini, google/gemini-2.5-flash, anthropic/claude-sonnet-4, qwen/qwen3-235b-a22b-2507, etc.
+#   - base_url (string, required): OpenAI-compatible base URL, e.g., https://openrouter.ai/api/v1.
+#   - api_key (string, required): Either the raw API key string or an environment variable name (recommended, e.g., OPENROUTER_API_KEY).
+#   - temperature (float, optional, default 0.0): Sampling temperature, typically in [0, 2]; higher is more random.
+#   - top_p (float, optional, default 1.0): Nucleus sampling parameter; usually tune either this or temperature.
+#   - timeout (int, optional, default 500): Per-request timeout in seconds; increase for long-reasoning models (e.g., 1800).
+#   - generator_type (string, optional, default "direct"): Generator type.
+#       Options:
+#         - "direct": Text chat/general models (DirectGenerator).
+#         - "multimodal": Image+text multimodal (MultimodalGenerator); effective when passing an images list.
+#         - "embedding": Text embeddings (EmbeddingGenerator) only for embedding generation.
+#       Note: Embedding cache key parameters differ from chat; see cache.key_generator below.
+#   - reasoning_effort (string|any, optional, default null): Reasoning intensity/budget. Some models (e.g., gpt-5) support "low|medium|high" (provider-specific).
+#   - extra_body (dict, optional, default {}): Extra parameters passed through to the provider. Example for OpenRouter:
+#       extra_body:
+#         usage:
+#           include: true
+#         provider:
+#           only: ['deepinfra/fp8']
+#           allow_fallbacks: false
+#     Exact options depend on the gateway/provider documentation.
+#   - pricing (dict, optional, default {}): Custom token prices (used to estimate cost when usage.cost is unavailable).
+#       - prompt_price_per_million (float): Price per 1M input tokens.
+#       - completion_price_per_million (float): Price per 1M output tokens.
+#   - extract_fields (dict, optional, default {}): Extract fields from API response to RecordResult.extra_fields.
+#       Keys are the target field names, values are JSON paths in the response.
+#       Supported path formats:
+#         - "usage.prompt_tokens" -> response["usage"]["prompt_tokens"]
+#         - "choices[0].message.reasoning_content" -> response["choices"][0]["message"]["reasoning_content"]
+#       Note: Requires cache.conditions.cache_raw_response=true for field extraction to work.
+#       Example:
+#         extract_fields:
+#           reasoning_content: "choices[0].message.reasoning_content"
+#           reasoning_tokens: "usage.completion_tokens_details.reasoning_tokens"
+
+models:
+  - name: gemini-2.5-flash
+    api_model_name: google/gemini-2.5-flash
+    base_url: https://openrouter.ai/api/v1
+    api_key: OPENROUTER_API_KEY  # Recommended: use env var name; resolved at runtime
+    temperature: 0.2              # Sampling temperature (omit to use default)
+    top_p: 1.0                    # Nucleus sampling (omit to use default)
+    timeout: 600                  # Timeout seconds; increase for heavy reasoning
+    # generator_type: direct      # Options: direct|multimodal|embedding (default direct)
+    # reasoning_effort: medium    # Only effective for models that support it (e.g., gpt-5)
+    extra_body:                   # Example: OpenRouter passthrough (optional; remove if unused)
+      usage:
+        include: true
+      # provider:
+      #   only: ['deepinfra/fp8']
+      #   allow_fallbacks: false
+    # pricing:                    # Used for cost estimation if usage.cost is absent (optional)
+    #   prompt_price_per_million: 0.10
+    #   completion_price_per_million: 0.50
+
+
+###############################
+# 2) Datasets Configuration (required)
+###############################
+# - This is a list; each item includes:
+#   - dataset_id (string, required): Dataset identifier; must match evaluation.factory.Benchmark enum.
+#   - splits (list[string], optional): Splits to evaluate. Omit to use all available splits for the dataset.
+#
+# - How to list available datasets and splits:
+#   Method A (recommended): via CLI
+#     python -m data_collector.cli info config/data_collector_example.yaml
+#   Method B: check the code — Benchmark enum in evaluation/factory.py (datasets),
+#             and each evaluator's get_valid_splits() implementation (splits).
+#
+# - Example (keep just one example here; avoid listing long catalogs in config):
+datasets:
+  - dataset_id: hle           # One available dataset (see A/B above)
+    splits: ["test"]         # One valid split for this dataset
+
+
+########################
+# 3) Run Options (optional)
+########################
+# - Fields and defaults:
+#   - kind (string, default "bench"): Run type label; currently used for results directory organization.
+#   - output_dir (string, default "./results"): Output directory. Results saved under {output_dir}/bench.
+#   - overwrite (bool, default false): If true, ignore dedupe strategy and force re-run of all tasks.
+#   - concurrency (int, default 8): Concurrency level. Some benchmarks (e.g., HumanEval/MBPP) may fail at high concurrency.
+#   - log_level (string, default "INFO"): Logging level (DEBUG|INFO|WARNING|ERROR).
+#   - demo_mode (bool, default false): Demo mode; process only the first N samples and do not update the global index.
+#   - demo_limit (int, default 10): Per-split sample cap in demo mode.
+run:
+  # kind: bench
+  output_dir: ./results
+  overwrite: false
+  concurrency: 32
+  log_level: INFO
+  demo_mode: true
+  demo_limit: 100
+
+
+#############################
+# 4) Cache Configuration (optional)
+#############################
+# - Purpose: Provide a MySQL-backed persistent cache for model outputs to reduce duplicate calls and cost.
+# - Source of truth: common/cache/config.py (full field definitions), common/cache/decorator.py (integration logic).
+# - Important notes:
+#   - When enabled=false: cache is disabled.
+#   - When force_override_cache=true: always call the real API but still write results into the cache (useful when iterating prompts).
+#   - key_generator.cached_parameters: choose which parameters contribute to the cache key.
+#       • Chat/Completions (direct/multimodal) typical value:
+#         ["model", "temperature", "top_p", "messages", "reasoning_effort"] (default)
+#       • Embedding (generator_type=embedding) should be:
+#         ["model", "input"] — matching embeddings API input.
+#     See common/cache/key_generator.py.
+cache:
+  enabled: true
+  force_override_cache: false # If true: skip reading cache but still write results (useful for building cache)
+
+  # MySQL connection (values can be env var names like MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD)
+  mysql:
+    host: MYSQL_HOST              # Database host (env var name or direct value)
+    port: MYSQL_PORT              # Port (env var name or direct value)
+    user: MYSQL_USER              # Username (env var name or direct value)
+    password: MYSQL_PASSWORD      # Password (env var name or direct value)
+    database: avengers_cache_demo # Database name
+    table_name: generator_output_cache  # Table name (auto-created on startup)
+    charset: utf8mb4              # Charset (default utf8mb4)
+    autocommit: true              # Autocommit (default true)
+    ttl_seconds: null             # TTL (seconds), null means never expire
+
+    # Connection pool (usually unnecessary; try for high concurrency or unstable connections)
+    use_connection_pool: false    # Enable connection pool (default false)
+    pool_size: 4                  # Pool size (default 4)
+    max_overflow: 2               # Allowed overflow connections (default 2)
+    pool_timeout: 10              # Acquire connection timeout seconds (default 10)
+    pool_recycle: 3600            # Connection recycle seconds (default 3600)
+
+  # Cache key generation (decides which request differences become distinct cache entries)
+  key_generator:
+    # Chat/Completions default: model/temperature/top_p/messages/reasoning_effort together decide the key
+    # If your model uses additional output-affecting params (e.g., system prompt), add them here to avoid false hits
+    cached_parameters: ["model", "temperature", "top_p", "messages", "reasoning_effort"]
+    # For embeddings (only when models[*].generator_type=embedding), set to:
+    # cached_parameters: ["model", "input"]
+    hash_algorithm: blake2b       # Options: blake2b | sha256 | sha1 | md5
+    hash_digest_size: 16          # Digest length (effective for blake2b)
+
+  # Cache write conditions
+  conditions:
+    cache_successful_only: true   # Cache only "successful" generations (for Embedding: non-empty vector counts as success)
+    min_completion_tokens: 0      # Minimum completion_tokens threshold (text generation only)
+    cache_raw_response: false     # Cache complete API response JSON (required for extract_fields to work)
+    refresh_if_missing_raw_response: false  # Re-fetch from API if cached data is missing raw_response
+
+  # Cache logging and stats
+  log_level: INFO
+  enable_stats: true

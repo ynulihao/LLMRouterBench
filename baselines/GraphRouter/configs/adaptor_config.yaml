@@ -1,0 +1,125 @@
+# GraphRouter Adaptor Configuration
+# This file contains LLM descriptions and task descriptions for GraphRouter
+
+graphrouter:
+  # LLM Descriptions
+  # Each model's feature description (for embedding generation) and pricing info
+  # Maps from BaselineRecord.model_name to description
+  llm_descriptions:
+    "claude-sonnet-4":
+      feature: "Claude Sonnet 4 is a multimodal language model with 200K context window and hybrid reasoning capabilities, supporting text and image inputs."
+      input_price: 3.0
+      output_price: 15.0
+
+    "gemini-2.5-flash":
+      feature: "Gemini 2.5 Flash is a multimodal model with 1M context window and thinking capabilities, supporting text, audio, image, and video inputs."
+      input_price: 0.3
+      output_price: 2.5
+
+    "gemini-2.5-pro":
+      feature: "Gemini 2.5 Pro is a multimodal model with 1M context window and Deep Think reasoning mode, supporting text, audio, image, video, and code inputs."
+      input_price: 1.25
+      output_price: 10.0
+
+    "gpt-5-chat":
+      feature: "GPT-5-chat is a multimodal language model variant from the GPT-5 system, supporting text and image inputs with hybrid reasoning capabilities."
+      input_price: 1.25
+      output_price: 10.0
+
+    "gpt-5":
+      feature: "GPT-5 is a multimodal language model with hybrid reasoning system and automatic routing between fast and reasoning modes, supporting text and image inputs."
+      input_price: 1.25
+      output_price: 10.0
+
+    "qwen3-235b-a22b-2507":
+      feature: "Qwen3-235B-A22B-2507 is a Mixture-of-Experts model with 235B total parameters and 22B active parameters, featuring 262K context window and instruction-tuned capabilities."
+      input_price: 0.09
+      output_price: 0.6
+
+    "qwen3-235b-a22b-thinking-2507":
+      feature: "Qwen3-235B-A22B-Thinking-2507 is a Mixture-of-Experts model with 235B total parameters and 22B active parameters, featuring 262K context window and reasoning-optimized capabilities."
+      input_price: 0.3
+      output_price: 2.9
+
+    "deepseek-v3-0324":
+      feature: "DeepSeek-V3-0324 is a Mixture-of-Experts model with advanced reasoning capabilities and efficient inference through multi-head latent attention."
+      input_price: 0.25
+      output_price: 0.88
+
+    "deepseek-v3.1-terminus":
+      feature: "DeepSeek-V3.1-Terminus is an enhanced Mixture-of-Experts model with improved reasoning and instruction-following capabilities."
+      input_price: 0.27
+      output_price: 1.0
+
+    "deepseek-r1-0528":
+      feature: "DeepSeek-R1-0528 is a reasoning-optimized model with extended thinking capabilities for complex problem-solving tasks."
+      input_price: 0.50
+      output_price: 2.15
+
+    "glm-4.6":
+      feature: "GLM-4.6 is a bilingual language model with strong performance in Chinese and English, featuring multimodal capabilities and long-context understanding."
+      input_price: 0.6
+      output_price: 2.2
+
+    "kimi-k2-0905":
+      feature: "Kimi-K2-0905 is a large-scale language model with extended context window capabilities and strong performance in Chinese language tasks."
+      input_price: 0.50
+      output_price: 2.00
+
+    "intern-s1":
+      feature: "InternLM-S1 is a multimodal language model with vision and language understanding capabilities, optimized for research and academic applications."
+      input_price: 0.18
+      output_price: 0.54
+
+  # Task (Dataset) Descriptions
+  # Maps from BaselineRecord.dataset_id to task description and metric
+  task_descriptions:
+    "aime":
+      description: "This dataset contains problems from the American Invitational Mathematics Examination (AIME). AIME is a prestigious high school mathematics competition known for its challenging mathematical problems."
+      metric: "em"
+
+    "gpqa":
+      description: "A challenging multiple-choice question set in biology, chemistry, and physics, authored by PhD-level experts."
+      metric: "em"
+
+    "hle":
+      description: "Humanity's Last Exam, a multi-modal benchmark at the frontier of human knowledge, designed to be the final closed-ended academic benchmark of its kind with broad subject coverage. "
+      metric: "em"
+
+    "livecodebench":
+      description: "LiveCodeBench collects problems from periodic contests on LeetCode, AtCoder, and Codeforces platforms and uses them for constructing a holistic benchmark for evaluating Code LLMs across variety of code-related scenarios continuously over time."
+      metric: "em"
+
+    "simpleqa":
+      description: "A factuality benchmark called SimpleQA that measures the ability for language models to answer short, fact-seeking questions."
+      metric: "em"
+
+    "livemathbench":
+      description: "LiveMathBench is a mathematical dataset, specifically designed to include challenging latest question sets from various mathematical competitions, aiming to avoid data contamination issues in existing LLMs and public math benchmarks."
+      metric: "em"
+
+    "mmlupro":
+      description: "MMLU-Pro comprises over 12,000 rigorously curated questions from academic exams and textbooks, spanning 14 diverse domains including Biology, Business, Chemistry, Computer Science, Economics, Engineering, Health, History, Law, Math, Philosophy, Physics, Psychology, and Others."
+      metric: "em"
+
+    "swe-bench":
+      description: "SWE-bench is a benchmark for evaluating large language models on real world software issues collected from GitHub. Given a codebase and an issue, a language model is tasked with generating a patch that resolves the described problem."
+      metric: "em"
+
+    "tau2":
+      description: "Tau2 implements a simulation framework for evaluating customer service agents across various domains."
+      metric: "em"
+
+    "arenahard":
+      description: "Arenahard contains 500 fresh, challenging real-world user queries (open-ended software engineering problems, math questions, etc) and 250 creative writing queries sourced from Chatbot Arena"
+      metric: "em"
+
+  # Adaptor Parameters
+  output:
+    # Output directory (relative to baselines/GraphRouter/)
+    data_dir: "data"
+
+    # Output filenames
+    router_data_csv: "router_data.csv"
+    llm_embedding_pkl: "llm_description_embedding.pkl"
+    llm_descriptions_json: "LLM_Descriptions.json"

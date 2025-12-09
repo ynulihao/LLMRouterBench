@@ -1,0 +1,77 @@
+# OpenRouterBench Baseline Data Loading Configuration
+#
+# This configuration controls how benchmark results are loaded and transformed
+# into baseline format for analysis and comparison.
+
+baseline:
+  # Data Source
+  # -----------
+  # Directory containing benchmark result files
+  results_dir: "results/bench"
+
+  # Data Filtering
+  # --------------
+  # Control which results to include in the baseline dataset
+  #
+  # Priority: Include lists (whitelist) > Exclude lists (blacklist)
+  # - If 'datasets' is set (not null), only those datasets are loaded
+  # - If 'datasets' is null and 'exclude_datasets' is set, all datasets except those are loaded
+  # - Same logic applies to 'models' and 'splits'
+  filters:
+    # Skip demo/test results (recommended: true)
+    skip_demo: true
+
+    # Include lists (whitelist) - higher priority
+    # If set (not null), only these items are loaded, and exclude lists are ignored
+
+    # Filter by specific datasets (null = include all)
+    # Example: ['aime', 'humaneval', 'bbh']
+    datasets: ['aime', 'livemathbench', 'gpqa', 'hle', 'livecodebench', 'mmlupro', 'swe-bench', 'simpleqa', 'tau2', 'arenahard'] # arc-agi
+
+    # Filter by specific models (null = include all)
+    # Example: ['gpt-4', 'claude-3', 'gemini-pro']
+    models: ["claude-sonnet-4", "deepseek-v3-0324", "deepseek-v3.1-terminus", "deepseek-r1-0528", "gemini-2.5-flash", "gemini-2.5-pro", "gpt-5-chat", "gpt-5", "qwen3-235b-a22b-2507", "qwen3-235b-a22b-thinking-2507", "glm-4.6", "kimi-k2-0905", "intern-s1"]
+
+    # Reference models for comparison only (excluded from aggregation calculations)
+    # Note: reference_models and models must not overlap
+    # reference_models: ["openrouter"]
+
+    # Filter by specific splits (null = include all)
+    # Example: ['test', 'valid']
+    splits: ['test', 'hybrid', 'v1', 'test_3000', 'verified']
+
+    # Exclude lists (blacklist) - only effective when include list is null
+    # If the corresponding include list is null, these items will be excluded
+
+    # Exclude specific datasets (null = no exclusions)
+    # Example: ['test_dataset', 'debug_dataset']
+    exclude_datasets: null
+
+    # Exclude specific models (null = no exclusions)
+    # Example: ['failed-model', 'incomplete-model']
+    exclude_models: null
+
+    # Exclude specific splits (null = no exclusions)
+    # Example: ['debug']
+    exclude_splits: null
+
+  # Column Selection
+  # ----------------
+  # Explicitly specify which columns to include in the output
+  # This reduces memory usage and file size by only loading needed fields
+  #
+  # Available columns:
+  #   - dataset_id, split, model_name, record_index (identification)
+  #   - origin_query, prompt (input)
+  #   - prediction, raw_output (output)
+  #   - ground_truth, score (evaluation)
+  #   - prompt_tokens, completion_tokens, cost (resources)
+  columns:
+    include:
+      - dataset_id
+      - split
+      - model_name
+      - record_index
+      - prompt
+      - score
+      - cost

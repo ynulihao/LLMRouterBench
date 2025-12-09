@@ -1,0 +1,11 @@
+{
+  "mf": {
+    "checkpoint_path": "baselines/RouteLLM/checkpoints/gpt5_vs_gemini",
+    "hidden_size": 3584,
+    "num_models": 33,
+    "text_dim": 3584,
+    "num_classes": 1,
+    "use_proj": false,
+    "embedding_config_path": "config/embedding_config.yaml"
+  }
+}

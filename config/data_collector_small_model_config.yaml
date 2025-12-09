@@ -1,0 +1,331 @@
+# OpenRouterBench Complete Configuration Template
+# This file shows all available configuration options with examples
+# Copy and modify this file to create your own configuration
+
+# ================================
+# MODEL CONFIGURATIONS
+# ================================
+# Define the LLM models you want to benchmark
+# Each model requires: name, api_model_name, base_url, api_key
+
+models:
+  # OpenAI-style API models
+  - name: Fin-R1
+    api_model_name: Fin-R1
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 300 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.04 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.10
+
+  - name: gemma-2-9b-it
+    api_model_name: gemma-2-9b-it
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 300 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.02 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.036
+
+  - name: Llama-3.1-8B-UltraMedical
+    api_model_name: Llama-3.1-8B-UltraMedical
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.015 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.02
+
+  - name: Llama-3.1-8B-Instruct
+    api_model_name: Llama-3.1-8B-Instruct
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 300 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.015 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.02
+
+  - name: Qwen3-8B
+    api_model_name: Qwen3-8B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.035 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.138
+
+  - name: Intern-S1-mini   #base model select Qwen3 8B
+    api_model_name: Intern-S1-mini   
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.035 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.138
+
+  - name: DeepSeek-R1-Distill-Qwen-7B
+    api_model_name: DeepSeek-R1-Distill-Qwen-7B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.04 # TODO: check the pricing on openrouter 
+      completion_price_per_million: 0.10  # base model : Qwen2.5 7B Instruct
+
+  - name: Llama-3.1-Nemotron-Nano-8B-v1
+    api_model_name: Llama-3.1-Nemotron-Nano-8B-v1
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 300 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.015 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.02
+
+  - name: glm-4-9b-chat     #推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: glm-4-9b-chat
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询不到，先设置成0
+      completion_price_per_million: 0
+
+  - name: cogito-v1-preview-llama-8B    #推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: cogito-v1-preview-llama-8B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询不到，先设置成0
+      completion_price_per_million: 0
+
+  - name: granite-3.3-8b-instruct  #推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: granite-3.3-8b-instruct 
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询不到，先设置成0
+      completion_price_per_million: 0
+
+  - name: DeepSeek-R1-0528-Qwen3-8B     # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: DeepSeek-R1-0528-Qwen3-8B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.03 # 模型的价格查询可以查到
+      completion_price_per_million: 0.11
+
+  - name: DeepHermes-3-Llama-3-8B-Preview     # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: DeepHermes-3-Llama-3-8B-Preview 
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.03 # 模型的价格查询可以查到
+      completion_price_per_million: 0.11
+
+  - name: NVIDIA-Nemotron-Nano-9B-v2    # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: NVIDIA-Nemotron-Nano-9B-v2
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 3600 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0.04 # 模型的价格查询可以查到
+      completion_price_per_million: 0.16
+
+  - name: internlm3-8b-instruct   # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: internlm3-8b-instruct
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+  - name: GLM-Z1-9B-0414   # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: GLM-Z1-9B-0414
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+  - name: MiniCPM4.1-8B  # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: MiniCPM4.1-8B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+  - name: MiMo-7B-RL-0530   # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: MiMo-7B-RL-0530
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+  - name: OpenThinker3-7B   # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: OpenThinker3-7B
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+  - name: Qwen2.5-Coder-7B-Instruct   # 9之后，推理脚本都用Deepseek-R1-distill的脚本
+    api_model_name: Qwen2.5-Coder-7B-Instruct
+    base_url: https://url.here/v1
+    api_key: HUOSHAN_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout: 1800 # For reasoning, we need to set a longer timeout
+    pricing:
+      prompt_price_per_million: 0 # 模型的价格查询查不到
+      completion_price_per_million: 0
+
+# ================================
+# DATASET CONFIGURATIONS
+# ================================
+# Specify which datasets and splits to evaluate
+# If splits is not specified, all available splits will be used
+
+datasets:
+  - dataset_id: aime
+    splits: ["hybrid"]
+
+  - dataset_id: arcc
+    splits: ["test"]
+
+  - dataset_id: bbh
+    splits: ["test"]
+
+  - dataset_id: emorynlp
+    splits: ["test"]
+
+  - dataset_id: finqa
+    splits: ["test"]
+
+  - dataset_id: gpqa
+    splits: ["test"]
+
+  - dataset_id: humaneval
+    splits: ["test"]
+
+  - dataset_id: kandk
+    splits: ["test"]
+
+  - dataset_id: korbench
+    splits: ["test"]
+
+  - dataset_id: livecodebench
+    splits: ["test"]
+
+  - dataset_id: livemathbench
+    splits: ["test"]
+
+  - dataset_id: math500
+    splits: ["test"]
+
+  - dataset_id: mathbench
+    splits: ["test"]
+
+  - dataset_id: mbpp
+    splits: ["test"]
+
+  - dataset_id: medqa
+    splits: ["test"]
+
+  - dataset_id: meld
+    splits: ["test"]
+
+  - dataset_id: mmlupro
+    splits: ["test"]
+
+  - dataset_id: winogrande
+    splits: ["valid"]
+    
+run:
+  output_dir: ./results
+  overwrite: false
+  concurrency: 32 #  Setting the parameter too high makes HumanEval and MBPP fail.
+  log_level: INFO
+
+
+cache:
+  enabled: true
+  force_override_cache: false
+  mysql:
+    host: MYSQL_HOST
+    port: MYSQL_PORT
+    user: MYSQL_USER
+    password: MYSQL_PASSWORD
+    database: avengers_cache_demo
+    table_name: generator_output_cache
+    charset: utf8mb4
+    autocommit: true
+    ttl_seconds: null
+
+    use_connection_pool: false
+    pool_size: 4
+    max_overflow: 2
+    pool_timeout: 10
+    pool_recycle: 3600
+
+  key_generator:
+    cached_parameters: ["model", "temperature", "top_p", "messages", "reasoning_effort"]
+    hash_algorithm: blake2b
+    hash_digest_size: 16
+
+  conditions:
+    cache_successful_only: true
+    min_completion_tokens: 0
+
+  log_level: INFO
+  enable_stats: true

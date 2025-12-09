@@ -1,0 +1,13 @@
+  {
+    "json_path": "baselines/RouteLLM/data/seed42_split0.8_Fin-R1__vs__cogito-v1-preview-llama-8B/pairwise_train.json",
+    "npy_path": "baselines/RouteLLM/data/seed42_split0.8_Fin-R1__vs__cogito-v1-preview-llama-8B/prompt_embeddings.npy",
+    "dim": 3584,
+    "use_proj": false,
+    "batch_size": 64,
+    "num_epochs": 30,
+    "alpha": 0.1,
+    "lr": 3e-4,
+    "weight_decay": 1e-5,
+    "device": "cuda",
+    "save_path": "baselines/RouteLLM/checkpoints/gpt5_vs_gemini/mf_model.pt"
+  }

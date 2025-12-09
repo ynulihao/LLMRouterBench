@@ -1,0 +1,19 @@
+{
+  "train_data_path": "data/1019/seed42_split0.8/train.jsonl",
+  "test_data_path": "data/1019/seed42_split0.8/test.jsonl",
+  "baseline_scores_path": "data/1019/seed42_split0.8/baseline_scores.json",
+  "n_clusters": 16,
+  "seed": 42,
+  "max_router": 1,
+  "top_k": 1,
+  "beta": 9.0,
+  "max_workers": 32,
+  "cluster_batch_size": 1000,
+  "max_tokens": 30000,
+  "embedding_model": "gte_Qwen2-7B-instruct",
+  "embedding_base_url": "https://sd3g8mam6uj313gtp0fbg.apigateway-cn-beijing.volceapi.com/v1",
+  "embedding_api_key": "inplaceholder",
+  "embedding_config_path": "config/embedding_config.yaml",
+  "excluded_models": [],
+  "ood_datasets": []
+}

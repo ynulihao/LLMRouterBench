@@ -1,0 +1,26 @@
+# Config parameters for router data construction:
+# api_key: ""
+# unified_qa_data_path: 'data/unified_qa_data.csv'
+llm_description_path: 'data/LLM_Descriptions.json'
+llm_embedding_path: 'data/llm_description_embedding.pkl'
+# Note: Auto-detects .parquet (recommended, 3x faster) or .csv format
+# If both exist, .parquet will be used automatically for better performance
+saved_router_data_path: 'data/router_data.csv'
+query_response_length: 512
+
+
+# Config parameters for graph_router training:
+seed: 1881
+wandb_key: ''
+model_path: 'model_path/best_model.pth'
+train_epoch: 2000
+scenario: "Performance First"  # "Performance First", "Balance", and "Cost First"
+llm_num: 13
+learning_rate: 0.0003
+weight_decay: 0.0001
+train_mask_rate: 0.5
+batch_size: 32
+# num_task: 5  # DEPRECATED - No longer needed. Task count is now inferred from task_id column in data
+split_ratio: [0.7, 0.0, 0.3]  # Changed: Removed validation set, merged into test set
+embedding_dim: 8
+edge_dim: 3

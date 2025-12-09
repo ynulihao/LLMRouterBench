@@ -1,0 +1,124 @@
+# OpenRouterBench Data Collector Configuration
+# Small-scale example for testing
+
+# Model configurations
+models:
+  # - name: gemini-2.5-flash
+  #   api_model_name: google/gemini-2.5-flash
+  #   base_url: https://openrouter.ai/api/v1
+  #   api_key: OPENROUTER_API_KEY
+  #   temperature: 0.2
+  #   top_p: 1.0
+  #   timeout: 1800 # For reasoning, we need to set a longer timeout
+  #   generator_type: multimodal
+  #   extra_body: # openrouter only
+  #       usage:
+  #         include: true
+
+  # - name: gemini-2.5-pro
+  #   api_model_name: google/gemini-2.5-pro
+  #   base_url: https://openrouter.ai/api/v1
+  #   api_key: OPENROUTER_API_KEY
+  #   temperature: 0.2
+  #   top_p: 1.0
+  #   timeout: 1800 # For reasoning, we need to set a longer timeout
+  #   generator_type: multimodal
+  #   extra_body: # openrouter only
+  #       usage:
+  #         include: true
+
+  # - name: gpt-5-chat
+  #   api_model_name: openai/gpt-5-chat
+  #   base_url: https://openrouter.ai/api/v1
+  #   api_key: OPENROUTER_API_KEY
+  #   temperature: 0.2
+  #   top_p: 1.0
+  #   timeout: 1800 # For reasoning, we need to set a longer timeout
+  #   generator_type: multimodal
+  #   extra_body: # openrouter only
+  #       usage:
+  #         include: true
+
+  # - name: gpt-5
+  #   api_model_name: openai/gpt-5
+  #   base_url: https://openrouter.ai/api/v1
+  #   api_key: OPENROUTER_API_KEY
+  #   temperature: 0.2
+  #   top_p: 1.0
+  #   timeout: 1800 # For reasoning, we need to set a longer timeout
+  #   generator_type: multimodal
+  #   reasoning_effort: medium
+  #   extra_body: # openrouter only
+  #       usage:
+  #         include: true
+  
+  # - name: claude-sonnet-4
+  #   api_model_name: anthropic/claude-sonnet-4
+  #   base_url: https://openrouter.ai/api/v1
+  #   api_key: OPENROUTER_API_KEY
+  #   temperature: 0.2
+  #   top_p: 1.0
+  #   timeout: 1800 # For reasoning, we need to set a longer timeout
+  #   generator_type: multimodal
+  #   extra_body: # openrouter only
+  #       usage:
+  #         include: true
+
+  - name: intern-s1
+    api_model_name: intern-s1
+    base_url: https://intern.openxlab.org.cn/api/v1/
+    api_key: INTERN_API_KEY
+    temperature: 0.7
+    top_p: 1.0
+    timeout: 1200
+    generator_type: multimodal
+
+    pricing:
+      prompt_price_per_million: 0.18 # TODO: check the pricing on openrouter
+      completion_price_per_million: 0.54
+
+# Dataset configurations
+datasets:
+  - dataset_id: sfe
+    splits: ["test"]
+
+# Execution configuration
+run:
+  output_dir: ./results
+  overwrite: false
+  concurrency: 32
+  log_level: INFO
+  # demo_mode: true
+  # demo_limit: 400
+
+cache:
+  enabled: false
+  force_override_cache: false
+  mysql:
+    host: MYSQL_HOST
+    port: MYSQL_PORT
+    user: MYSQL_USER
+    password: MYSQL_PASSWORD
+    database: avengers_cache_demo
+    table_name: generator_output_cache
+    charset: utf8mb4
+    autocommit: true
+    ttl_seconds: null
+
+    use_connection_pool: false
+    pool_size: 4
+    max_overflow: 2
+    pool_timeout: 10
+    pool_recycle: 3600
+
+  key_generator:
+    cached_parameters: ["model", "temperature", "top_p", "messages", "reasoning_effort"]
+    hash_algorithm: blake2b
+    hash_digest_size: 16
+
+  conditions:
+    cache_successful_only: true
+    min_completion_tokens: 0
+
+  log_level: INFO
+  enable_stats: true
