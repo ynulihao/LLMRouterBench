@@ -113,7 +113,7 @@ RouterDC, EmbedLLM, GraphRouter, Avengers-Pro, HybridLLM, FrugalGPT, RouteLLM, M
 **1. Collect Data**
 ```bash
 python -m data_collector.cli run \
-    config/baseline_config.yaml
+    config/data_collector_small_model_config.yaml
 ```
 
 </td>
