@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr  8 15:10:54 2023
-
-@author: CLJ
+LLM Chain Strategy Module
 """
 import os, copy, numpy, itertools, logging, json
 from . import optimizer

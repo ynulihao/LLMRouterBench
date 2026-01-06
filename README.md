@@ -7,7 +7,6 @@
 ### A One-Stop Benchmark and Solution Suite for LLM Routing
 
 ![Paper](https://img.shields.io/badge/Paper-Coming%20Soon-red.svg)
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg)](https://huggingface.co/datasets/NPULH/OpenRouterBench)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)]()
 
@@ -41,7 +40,7 @@
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/ynulihao/OpenRouterBench.git
+git clone https://github.com/anonymous/OpenRouterBench.git
 cd OpenRouterBench
 pip install -r requirements.txt
 ```
@@ -193,11 +192,7 @@ Results are stored in JSON format at `results/bench/<dataset>/<split>/<model>/<t
 
 Download pre-collected benchmark results:
 
-**Baidu Netdisk：** [bench-release.tar.gz](https://pan.baidu.com/s/1bfa_eX3bhuo7wgNlD_dbpA?pwd=mmbf) (code：`mmbf`)
-
 **Google Drive：** [bench-release.tar.gz](https://drive.google.com/file/d/12pupoZDjqziZ2JPspH60MCC8fdXWgnX1/view?usp=drive_link)
-
-**Hugging Face：** [bench-release.tar.gz](https://huggingface.co/datasets/NPULH/OpenRouterBench)
 
 ```bash
 # Extract to results directory
@@ -463,58 +458,8 @@ Existing routing benchmarks face several limitations:
 - **FusionFactory**: Benchmarks open-source models with estimated costs.
 - **RouterArena**: Uses inconsistent model pools across routers, undermining fair comparison and lacking per-prompt, per-model data.
 
-## 📝 Citation
-
-If you find OpenRouterBench useful, please cite our paper:
-```bibtex
-@article{openrouterbench,
-  title={OpenRouterBench: A Massive Benchmark for LLM Routing},
-  author={Li, Hao and Zhang, Yiqun and Wang, Chenxu and Guo, Zhaoyan and Chen, Jianhao and Zhang, Hangfan and Tang, Shengji and Zhang, Qiaosheng and Ye, Peng and Chen, Yang and Bai, Lei and Wang, Zhen and Hu, Shuyue},
-  note={Coming soon},
-  year={2025}
-}
-```
-This work is part of our series of studies on LLM routing; if you’re interested, please refer to and cite:
-```bibtex
-@inproceedings{zhang2025avengers,
-  title        = {The Avengers: A Simple Recipe for Uniting Smaller Language Models to Challenge Proprietary Giants},
-  author       = {Zhang, Yiqun and Li, Hao and Wang, Chenxu and Chen, Linyao and Zhang, Qiaosheng and Ye, Peng and Feng, Shi and Wang, Daling and Wang, Zhen and Wang, Xinrun and others},
-  booktitle    = {Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)},
-  year         = {2025},
-  note         = {Oral presentation},
-  url          = {https://arxiv.org/abs/2505.19797}
-}
-@inproceedings{zhang2025beyond,
-  title        = {Beyond gpt-5: Making llms cheaper and better via performance-efficiency optimized routing},
-  author       = {Zhang, Yiqun and Li, Hao and Chen, Jianhao and Zhang, Hangfan and Ye, Peng and Bai, Lei and Hu, Shuyue},
-  booktitle    = {Distributed AI (DAI) conference},
-  year         = {2025},
-  note         = {Best Paper Award},
-  url          = {https://arxiv.org/abs/2508.12631}
-}
-@inproceedings{wang2025icl,
-  title        = {ICL-Router: In-Context Learned Model Representations for LLM Routing},
-  author       = {Wang, Chenxu and Li, Hao and Zhang, Yiqun and Chen, Linyao and Chen, Jianhao and Jian, Ping and Ye, Peng and Zhang, Qiaosheng and Hu, Shuyue},
-  booktitle    = {Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)},
-  year         = {2025},
-  note         = {Poster},
-  url          = {https://arxiv.org/abs/2510.09719}
-}
-@article{chen2025learning,
-  title        = {Learning Compact Representations of LLM Abilities via Item Response Theory},
-  author       = {Chen, Jianhao and Wang, Chenxu and Zhang, Gengrui and Ye, Peng and Bai, Lei and Hu, Wei and Qu, Yuzhong and Hu, Shuyue},
-  journal      = {arXiv preprint arXiv:2510.00844},
-  year         = {2025},
-  url          = {https://arxiv.org/abs/2510.00844v1}
-}
-```
-
----
-
 <div align="center">
 
 **OpenRouterBench** — Advancing LLM Routing Research
-
-[Report Issue](https://github.com/ynulihao/OpenRouterBench/issues) · [Request Feature](https://github.com/ynulihao/OpenRouterBench/issues)
 
 </div>

@@ -185,23 +185,6 @@ python simple_cluster_router.py \
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ZhangYiqun018/AvengersPro&type=Date)](https://www.star-history.com/#ZhangYiqun018/AvengersPro&Date)
-
----
-
-**Project Lead:** hushuyue@pjlab.org.cn, zhangyiqun344@gmail.com
-
 <div align="center">
 <i>For detailed technical implementation and comprehensive experimental results, please refer to our paper.</i>
 </div>
-
-```cite
-@article{zhang2025beyond,
-  title={Beyond GPT-5: Making LLMs Cheaper and Better via Performance-Efficiency Optimized Routing},
-  author={Zhang, Yiqun and Li, Hao and Chen, Jianhao and Zhang, Hangfan and Ye, Peng and Bai, Lei and Hu, Shuyue},
-  journal={arXiv preprint arXiv:2508.12631},
-  year={2025}
-}
-```

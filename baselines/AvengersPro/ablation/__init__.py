@@ -12,7 +12,6 @@ Features:
 """
 
 __version__ = "1.0.0"
-__author__ = "Balance Cluster Router Team"
 
 # Only import core components without matplotlib dependencies
 from .data_collector import AblationDataCollector
