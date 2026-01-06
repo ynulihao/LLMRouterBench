@@ -1,6 +1,6 @@
 # RouteLLM: Learning to Route LLMs with Preference Data
 
-This baseline integrates [RouteLLM](https://github.com/lm-sys/RouteLLM)'s matrix factorization router for LLM routing in OpenRouterBench.
+This baseline integrates [RouteLLM](https://github.com/lm-sys/RouteLLM)'s matrix factorization router for LLM routing in LLMRouterBench.
 
 **Paper**: [RouteLLM: Learning to Route LLMs with Preference Data](https://arxiv.org/abs/2406.18665)
 

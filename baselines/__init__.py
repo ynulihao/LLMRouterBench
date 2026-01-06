@@ -1,5 +1,5 @@
 """
-OpenRouterBench Baseline Data Loading System
+LLMRouterBench Baseline Data Loading System
 
 This package provides efficient loading, transformation, and analysis of
 benchmark results for baseline comparisons across datasets and models.

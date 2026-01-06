@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Fine-tune a local encoder/embedding model (default: gte_Qwen2-7B-Instruct) as a
-# FrugalGPT-compatible scorer using OpenRouterBench AvengersPro JSONL splits
+# FrugalGPT-compatible scorer using LLMRouterBench AvengersPro JSONL splits
 # (prompt/cost/score + per-model usage cost). Supports single GPU or DeepSpeed ZeRO-2.
 #
 # Usage:

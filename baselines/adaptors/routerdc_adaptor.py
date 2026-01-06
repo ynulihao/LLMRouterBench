@@ -1,5 +1,5 @@
 """
-RouterDC data adaptor for OpenRouterBench.
+RouterDC data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to RouterDC format (JSON files with clustering).
 """
@@ -413,7 +413,7 @@ class RouterDCAdaptor:
 def main():
     """Main entry point for RouterDC adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to RouterDC format'
+        description='Convert LLMRouterBench baseline data to RouterDC format'
     )
     parser.add_argument(
         '--config',

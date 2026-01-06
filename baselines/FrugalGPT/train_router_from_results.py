@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Fine-tune a local encoder model (HuggingFace format) as a FrugalGPT-compatible scorer
-using OpenRouterBench result JSON files (prompt, cost, score, prediction/raw_output).
+using LLMRouterBench result JSON files (prompt, cost, score, prediction/raw_output).
 
 What it does
 - Recursively loads JSON files from --inputs (dirs or files)
@@ -172,7 +172,7 @@ def load_records(files: Iterable[Path]) -> pd.DataFrame:
 
 
 def load_jsonl_split(path: Path, split: str) -> pd.DataFrame:
-    """Load OpenRouterBench JSONL split where each line stores per-model records."""
+    """Load LLMRouterBench JSONL split where each line stores per-model records."""
     path = Path(path).expanduser()
     rows: List[Dict] = []
     with path.open() as handle:
@@ -1243,13 +1243,13 @@ def parse_args() -> argparse.Namespace:
         "--train-jsonl",
         type=Path,
         default=None,
-        help="Optional OpenRouterBench train split JSONL (records + usages).",
+        help="Optional LLMRouterBench train split JSONL (records + usages).",
     )
     p.add_argument(
         "--test-jsonl",
         type=Path,
         default=None,
-        help="Optional OpenRouterBench test split JSONL (records + usages).",
+        help="Optional LLMRouterBench test split JSONL (records + usages).",
     )
     p.add_argument(
         "--local-base",

@@ -1,4 +1,4 @@
-# Embedding Model Configuration for OpenRouterBench
+# Embedding Model Configuration for LLMRouterBench
 # Used by EmbeddingGenerator for generating text embeddings
 
 # Embedding model configuration

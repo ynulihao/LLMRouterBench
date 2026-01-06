@@ -1,5 +1,5 @@
 """
-RouterEmbedding adaptor for OpenRouterBench.
+RouterEmbedding adaptor for LLMRouterBench.
 
 This adaptor prepares prompt-level JSONL datasets tailored for downstream
 embedding-model training. It reuses the shared baseline loader to split

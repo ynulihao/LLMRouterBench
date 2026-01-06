@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Embedding Visualization Tool for OpenRouterBench
+Embedding Visualization Tool for LLMRouterBench
 
 This script visualizes question embeddings from benchmark results, colored by dataset.
 It loads results from the results/bench directory, generates embeddings using the
@@ -331,7 +331,7 @@ def visualize_embeddings(embeddings_2d: np.ndarray,
 def main():
     """Main entry point for the visualization tool."""
     parser = argparse.ArgumentParser(
-        description='Visualize question embeddings from OpenRouterBench results',
+        description='Visualize question embeddings from LLMRouterBench results',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

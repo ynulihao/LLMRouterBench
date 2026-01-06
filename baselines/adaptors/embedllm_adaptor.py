@@ -1,5 +1,5 @@
 """
-EmbedLLM data adaptor for OpenRouterBench.
+EmbedLLM data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to EmbedLLM format (CSV files).
 """
@@ -315,7 +315,7 @@ class EmbedLLMAdaptor:
 def main():
     """Main entry point for EmbedLLM adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to EmbedLLM format'
+        description='Convert LLMRouterBench baseline data to EmbedLLM format'
     )
     parser.add_argument(
         '--config',

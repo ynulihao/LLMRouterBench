@@ -1,6 +1,6 @@
 # 🔌 External Benchmark Integration
 
-A lightweight API wrapper for integrating complex third-party benchmarks (SWE-bench, τ²-bench, etc.) that are too difficult to port into OpenRouterBench's standard evaluation system.
+A lightweight API wrapper for integrating complex third-party benchmarks (SWE-bench, τ²-bench, etc.) that are too difficult to port into LLMRouterBench's standard evaluation system.
 
 ---
 
@@ -11,7 +11,7 @@ Some benchmarks are **too complex to integrate** into the standard pipeline:
 - **τ²-bench**: Complex multi-turn interactions, specialized environments
 
 **external_bench provides minimal-touch integration**:
-- Use OpenRouterBench's unified API management (`DirectGenerator`)
+- Use LLMRouterBench's unified API management (`DirectGenerator`)
 - Benefit from MySQL caching to reduce API costs
 - Keep your entire evaluation system unchanged
 
@@ -140,7 +140,7 @@ accuracy = finish_benchmark(
 
 Results saved to: `results/bench/external_bench/<dataset>/<split>/<model>/<timestamp>.json`
 
-Format matches OpenRouterBench's standard for compatibility with baselines and analysis tools.
+Format matches LLMRouterBench's standard for compatibility with baselines and analysis tools.
 
 ---
 

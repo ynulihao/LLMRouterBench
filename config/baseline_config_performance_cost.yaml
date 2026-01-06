@@ -1,4 +1,4 @@
-# OpenRouterBench Baseline Data Loading Configuration
+# LLMRouterBench Baseline Data Loading Configuration
 #
 # This configuration controls how benchmark results are loaded and transformed
 # into baseline format for analysis and comparison.

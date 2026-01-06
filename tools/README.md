@@ -1,6 +1,6 @@
 # 🔧 Tools
 
-The **Tools** module provides utility scripts for OpenRouterBench system maintenance, result management, and debugging.
+The **Tools** module provides utility scripts for LLMRouterBench system maintenance, result management, and debugging.
 
 ---
 
@@ -260,7 +260,7 @@ Quickly verify that the embedding model configuration is correct and the API ret
 ```bash
 # Test with a single prompt
 export HUOSHAN_API_KEY=your-api-key
-python -m tools.test_embedding_model --text "Hello OpenRouterBench!"
+python -m tools.test_embedding_model --text "Hello LLMRouterBench!"
 
 # Test with prompts from a file (one per line)
 python -m tools.test_embedding_model --file prompts.txt
@@ -297,7 +297,7 @@ embedding_model:
 
 ```
 2025-10-XX XX:XX:XX | INFO     | Initialised embedding generator for model gte_Qwen2-7B-instruct
-2025-10-XX XX:XX:XX | INFO     | Prompt: Hello OpenRouterBench! | dim=3584 | prompt_tokens=5
+2025-10-XX XX:XX:XX | INFO     | Prompt: Hello LLMRouterBench! | dim=3584 | prompt_tokens=5
 2025-10-XX XX:XX:XX | INFO     | Embedding test complete: 1 succeeded, 0 failed
 ```
 

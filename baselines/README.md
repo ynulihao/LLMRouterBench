@@ -1,6 +1,6 @@
 # Adaptor
 
-**OpenRouterBench Adaptor System - Data Loading, Transformation & Algorithm Integration**
+**LLMRouterBench Adaptor System - Data Loading, Transformation & Algorithm Integration**
 
 This package provides efficient loading, transformation, and analysis of benchmark results for baseline comparisons across datasets and models.
 
@@ -440,7 +440,7 @@ stats = AggregatedStats(
 
 # Part 2: Routing Algorithms & Adaptors
 
-The **Adaptor** module is a unified system that converts OpenRouterBench's standardized data format into algorithm-specific inputs for various LLM routing methods. Each adaptor handles the data transformation, train/test splitting, and format conversion needed for its corresponding routing algorithm.
+The **Adaptor** module is a unified system that converts LLMRouterBench's standardized data format into algorithm-specific inputs for various LLM routing methods. Each adaptor handles the data transformation, train/test splitting, and format conversion needed for its corresponding routing algorithm.
 
 > **Note**: We recommend creating a separate virtual environment for each algorithm to avoid dependency conflicts.
 

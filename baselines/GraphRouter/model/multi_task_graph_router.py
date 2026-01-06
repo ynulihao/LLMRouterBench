@@ -96,7 +96,7 @@ class graph_router_prediction:
         """
         Split data into train/test sets based on task_id column.
 
-        Modified for OpenRouterBench integration to properly handle datasets with
+        Modified for LLMRouterBench integration to properly handle datasets with
         varying sample sizes. Each task (dataset) is split independently using
         the configured split_ratio, preventing data leakage across tasks.
 

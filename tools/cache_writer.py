@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Cache Writer Script for OpenRouterBench
+Cache Writer Script for LLMRouterBench
 
 This script writes existing result data into cache to avoid repeated API calls.
 It processes result files from the Avengers_pro directory and writes them

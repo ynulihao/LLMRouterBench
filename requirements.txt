@@ -1,4 +1,4 @@
-# OpenRouterBench Core Dependencies
+# LLMRouterBench Core Dependencies
 # For data_collector, evaluation, and generators modules
 # Note: Each baseline has its own requirements.txt due to version conflicts
 

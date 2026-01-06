@@ -1,6 +1,6 @@
 # Benchmark Results Download
 
-This directory contains OpenRouterBench benchmark results data.
+This directory contains LLMRouterBench benchmark results data.
 
 ## Download Instructions
 

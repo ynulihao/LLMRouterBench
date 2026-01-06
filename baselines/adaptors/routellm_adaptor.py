@@ -1,6 +1,6 @@
-"""RouteLLM data adaptor for OpenRouterBench.
+"""RouteLLM data adaptor for LLMRouterBench.
 
-This adaptor converts OpenRouterBench baseline records into the assets required by
+This adaptor converts LLMRouterBench baseline records into the assets required by
 the Matrix Factorization (MF) training pipeline in :mod:`baselines.RouteLLM`.
 
 It performs two core tasks:
@@ -563,7 +563,7 @@ def main() -> None:
     """Command-line entry point for the RouteLLM adaptor."""
 
     parser = argparse.ArgumentParser(
-        description="Convert OpenRouterBench baseline data to RouteLLM MF training format"
+        description="Convert LLMRouterBench baseline data to RouteLLM MF training format"
     )
     parser.add_argument(
         "--config",

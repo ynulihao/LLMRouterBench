@@ -95,7 +95,7 @@ url={https://openreview.net/forum?id=Fs9EabmQrJ}
 }
 ```
 
-## The OpenRouterBench Demo
+## The LLMRouterBench Demo
 
 ```bash
 python algorithm/mf.py \

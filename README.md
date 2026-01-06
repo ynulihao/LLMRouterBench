@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="assets/logo.png" width="160" alt="OpenRouterBench">
+<img src="assets/logo.png" width="160" alt="LLMRouterBench">
 
-# OpenRouterBench
+# LLMRouterBench
 
-### A One-Stop Benchmark and Solution Suite for LLM Routing
+### A Massive Benchmark and Unified Framework for LLM Routing
 
-![Paper](https://img.shields.io/badge/Paper-Coming%20Soon-red.svg)
+![Paper](https://img.shields.io/badge/Paper-Under%20Review-yellow.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)]()
 
@@ -16,15 +16,15 @@
 ---
 
 <div align="center">
-<img src="assets/framework.png" width="95%" alt="Framework">
+<img src="assets/framework.jpg" width="95%" alt="Framework">
 </div>
 
 <br>
 
 ## 🌟 Highlights
-**OpenRouterBench provides high-quality inference data collected with nearly $3,000 and hundreds of GPU-hours, including:**
+**LLMRouterBench provides high-quality inference data collected with nearly $3,000 and hundreds of GPU-hours, including:**
 
-- Covering **25+ diverse and challenging datasets (e.g., HLE, SimpleQA, SWE-Bench)** across multiple domains.
+- Covering **21+ diverse and challenging datasets (e.g., HLE, SimpleQA, SWE-Bench)** across multiple domains.
 - Including both **20 lightweight ~7B models (e.g., Qwen3-8B, DeepSeek-R1-0528-Qwen3-8B)** and **13 flagship models (e.g., GPT-5, Gemini-2.5-Pro)**.
 - Providing **inference costs from OpenRouter** for all flagship models, including both USD and tokens.
 - Offering a **unified, plug-and-play framework** for fair cross-method comparisons.
@@ -40,8 +40,8 @@
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/anonymous/OpenRouterBench.git
-cd OpenRouterBench
+git clone https://github.com/anonymous/LLMRouterBench.git
+cd LLMRouterBench
 pip install -r requirements.txt
 ```
 
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 
 ## ⚙️ Configurations
 
-OpenRouterBench supports two routing paradigms with corresponding configuration files:
+LLMRouterBench supports two routing paradigms with corresponding configuration files:
 
 | Setting | Description | Collector Config | Adaptor Config |
 |:---|:---|:---|:---|
@@ -60,7 +60,7 @@ OpenRouterBench supports two routing paradigms with corresponding configuration 
 
 ## 🧩 Core Components
 
-OpenRouterBench provides a modular three-component architecture:
+LLMRouterBench provides a modular three-component architecture:
 
 <table>
 <tr>
@@ -375,52 +375,10 @@ Inference cost comparison across models and datasets ($/1M tokens). Shows the co
 
 ---
 
-## 🔬 Experimental Results
-
-### Performance-Oriented Routing
-
-The table below shows routing performance metrics across different methods:
-
-- **Acc**: Overall accuracy averaged across all datasets.
-- **ImpRand**: an improvement over Random Router, a baseline that uniformly selects models.
-- **ImpMax**: an improvement over Max Expert, a hindsight baseline that, for each dataset, selects the single model achieving the highest accuracy on that dataset and then uses only this model for all instances in that dataset.
-- **OracleGap**: gap to Oracle, an instance-level upper bound that always picks the best available model for each query.
-
-**Key Findings**: Routers nearly match the Max Expert baseline but remain far below the Oracle, indicating substantial room for improvement in instance-level routing.
-
-<div align="center">
-<img src="assets/Table7.png" width="70%" alt="Table 7: Performance Metrics">
-</div>
-
-### Cost-Aware Routing
-
-Performance-cost tradeoff metrics for routing methods:
-
-- **PerfGain**: Maximum performance improvement over the best single model.
-- **CostSave**: Cost reduction achieved while maintaining comparable accuracy to the best single model.
-- **ParetoRatio**: How often a method dominates competing methods (higher is better).
-- **ParetoDist**: Average distance to the Pareto frontier (lower is better).
-
-**Key Findings**: Routing methods achieve comparable accuracy to top models at significantly reduced inference costs, yet gaps to Max Expert and Oracle remain.
-
-<div align="center">
-<img src="assets/Table8.png" width="70%" alt="Table 8: Cost-Aware Routing Results">
-</div>
-
-### Performance-Cost Tradeoffs
-
-Visualization of accuracy vs. cost across all routing methods and base models. Panel A shows the Pareto frontier, while Panel B quantifies performance gains and cost savings relative to best single model (GPT-5).
-
-<div align="center">
-<img src="assets/Figure3.png" width="95%" alt="Figure 3: Performance-Cost Tradeoffs">
-</div>
-
----
-
 ## 🗂️ Project Structure
 
 ```
-OpenRouterBench/
+LLMRouterBench/
 ├── data_collector/     # Collector module
 ├── evaluation/         # Evaluator (25+ datasets)
 ├── baselines/          # Adaptor & routing algorithms
@@ -433,9 +391,9 @@ OpenRouterBench/
 
 ## 🗓️ Roadmap
 
-OpenRouterBench is evolving to better support the research community:
+LLMRouterBench is evolving to better support the research community:
 
-- **Research Publication**: An academic paper describing OpenRouterBench will be released.
+- **Research Publication**: An academic paper describing LLMRouterBench will be released.
 - **Expanded Model Evaluations**: Additional benchmarks of flagship models will be provided.
 - **Broader Dataset Coverage**: More datasets across diverse domains will be integrated.
 
@@ -460,6 +418,6 @@ Existing routing benchmarks face several limitations:
 
 <div align="center">
 
-**OpenRouterBench** — Advancing LLM Routing Research
+**LLMRouterBench** — Advancing LLM Routing Research
 
 </div>

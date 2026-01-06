@@ -1,5 +1,5 @@
 """
-Model-SAT data adaptor for OpenRouterBench.
+Model-SAT data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to the JSON format expected by the
 Model-SAT training pipeline.
@@ -237,7 +237,7 @@ class ModelSATAdaptor:
 def parse_args() -> argparse.Namespace:
     """Parse CLI arguments for the adaptor."""
     parser = argparse.ArgumentParser(
-        description="Convert OpenRouterBench baseline cache to Model-SAT JSON files."
+        description="Convert LLMRouterBench baseline cache to Model-SAT JSON files."
     )
     parser.add_argument(
         "--config",

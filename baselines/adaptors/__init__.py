@@ -1,5 +1,5 @@
 """
-Adaptors for converting OpenRouterBench baseline data to various baseline method formats.
+Adaptors for converting LLMRouterBench baseline data to various baseline method formats.
 
 This module provides data transformation utilities for:
 - EmbedLLM: Matrix factorization-based routing method

@@ -1,5 +1,5 @@
 """
-Hybrid LLM data adaptor for OpenRouterBench.
+Hybrid LLM data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to Hybrid LLM format (JSONL files).
 This adaptor is specifically for Hybrid LLM (not BEST-Route) which uses
@@ -294,7 +294,7 @@ class HybridLLMAdaptor:
 def main():
     """Main entry point for Hybrid LLM adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to Hybrid LLM format.\n'
+        description='Convert LLMRouterBench baseline data to Hybrid LLM format.\n'
                     'NOTE: Hybrid LLM uses pairwise routing, requiring EXACTLY 2 models.',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )

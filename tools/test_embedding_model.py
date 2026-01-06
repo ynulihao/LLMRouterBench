@@ -5,7 +5,7 @@ API returns vectors with consistent dimensionality. Example:
 
 ```
 export HUOSHAN_API_KEY=...
-python tools/test_embedding_model.py --text "Hello OpenRouterBench!"
+python tools/test_embedding_model.py --text "Hello LLMRouterBench!"
 ```
 """
 

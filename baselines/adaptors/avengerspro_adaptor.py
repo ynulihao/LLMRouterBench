@@ -1,5 +1,5 @@
 """
-AvengersPro data adaptor for OpenRouterBench.
+AvengersPro data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to AvengersPro format (JSONL files).
 """
@@ -254,7 +254,7 @@ class AvengersProAdaptor:
 def main():
     """Main entry point for AvengersPro adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to AvengersPro format'
+        description='Convert LLMRouterBench baseline data to AvengersPro format'
     )
     parser.add_argument(
         '--config',

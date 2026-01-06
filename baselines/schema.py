@@ -1,5 +1,5 @@
 """
-Baseline data schema definitions for OpenRouterBench.
+Baseline data schema definitions for LLMRouterBench.
 
 This module defines the unified schema for baseline benchmark records,
 ensuring consistent data structure across different datasets and models.

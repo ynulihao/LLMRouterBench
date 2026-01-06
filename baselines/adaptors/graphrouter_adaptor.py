@@ -1,5 +1,5 @@
 """
-GraphRouter data adaptor for OpenRouterBench.
+GraphRouter data adaptor for LLMRouterBench.
 
 Converts baseline benchmark results to GraphRouter format (CSV + embeddings).
 """
@@ -460,7 +460,7 @@ class GraphRouterAdaptor:
 def main():
     """Main entry point for GraphRouter adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to GraphRouter format'
+        description='Convert LLMRouterBench baseline data to GraphRouter format'
     )
     parser.add_argument(
         '--baseline-config',

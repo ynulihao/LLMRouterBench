@@ -263,7 +263,7 @@ class FrugalGPTAdaptor:
 def main():
     """Main entry point for FrugalGPT adaptor."""
     parser = argparse.ArgumentParser(
-        description='Convert OpenRouterBench baseline data to FrugalGPT format'
+        description='Convert LLMRouterBench baseline data to FrugalGPT format'
     )
     parser.add_argument(
         '--config',

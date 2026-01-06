@@ -1,5 +1,5 @@
 """
-Baseline data loader for OpenRouterBench.
+Baseline data loader for LLMRouterBench.
 
 This module provides efficient loading and transformation of benchmark results
 into baseline format, supporting various output formats.

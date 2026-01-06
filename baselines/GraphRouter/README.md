@@ -156,7 +156,7 @@ python run_exp.py --config_file [config]
 
 ---
 
-## Modifications for OpenRouterBench Integration
+## Modifications for LLMRouterBench Integration
 
 ### Train/Validation/Test Split Logic
 
@@ -189,7 +189,7 @@ This led to incorrect train/test splits where samples from the same dataset coul
 - ✅ More robust for datasets with varying sample sizes
 - ✅ Respects the semantic meaning of `task_id` in the data
 
-**Example Split Result** (for OpenRouterBench data):
+**Example Split Result** (for LLMRouterBench data):
 
 ```
 Dataset         Queries  Train Q  Val Q  Test Q  Train Rows  Val Rows  Test Rows
@@ -210,7 +210,7 @@ row counts are divisible by 7 for proper tensor reshaping during training.
 - The modification does not affect the training process or model architecture
 - Only the data splitting logic is changed
 - If your data is already uniformly distributed and properly ordered, results should be similar
-- For heterogeneous multi-dataset scenarios (like OpenRouterBench), this fix is essential
+- For heterogeneous multi-dataset scenarios (like LLMRouterBench), this fix is essential
 
 ---
 

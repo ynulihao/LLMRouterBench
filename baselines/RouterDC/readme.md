@@ -58,7 +58,7 @@ If you find RouterDC is useful for your research and applications, please cite u
 }
 ```
 
-## The OpenRouterBench Demo
+## The LLMRouterBench Demo
 
 ```bash
 ./train_scripts/router_train_7b_seed_42.sh

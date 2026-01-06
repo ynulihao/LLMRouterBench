@@ -18,7 +18,7 @@ Details
   - Keep the best validation checkpoint and write it to `save_path`.
   - Basic input validation around prompt indices and embedding files.
 - baselines/adaptors/routellm_adaptor.py: new adaptor to materialise MF
-  training data (pairwise JSON + embeddings) from OpenRouterBench baselines,
+  training data (pairwise JSON + embeddings) from LLMRouterBench baselines,
   including strong/weak model selection and embedding generation.
 - tools/test_embedding_model.py: helper script to validate the embedding
   service before running the RouteLLM adaptor.

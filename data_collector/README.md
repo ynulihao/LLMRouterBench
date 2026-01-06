@@ -47,7 +47,7 @@ cache:
   enabled: true
   mysql:
     host: localhost
-    database: openrouterbench_cache
+    database: llmrouterbench_cache
 ```
 
 ### Key Options
