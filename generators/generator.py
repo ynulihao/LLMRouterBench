@@ -6,11 +6,16 @@ import re
 from pathlib import Path
 import httpx
 from openai import OpenAI
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, retry_if_not_exception_type
 from loguru import logger
 import tiktoken
 
 from common.cache.decorator import create_cache_decorator
+
+
+class NonRetryableError(Exception):
+    """Exception for errors that should not be retried (e.g., content policy violations)"""
+    pass
 
 
 @dataclass
@@ -83,7 +88,7 @@ class DirectGenerator:
     @retry(
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=2, max=100),
-        retry=retry_if_exception_type((Exception,)),
+        retry=retry_if_not_exception_type(NonRetryableError),
         before_sleep=lambda retry_state: DirectGenerator._log_retry(None, retry_state)
     )
     def _generate(self, question: str) -> GeneratorOutput:
@@ -133,7 +138,11 @@ class DirectGenerator:
             return result
             
         except Exception as e:
-            logger.error(f"Error in DirectGenerator._generate: {str(e)}, model: {self.model_name}")
+            error_str = str(e)
+            logger.error(f"Error in DirectGenerator._generate: {error_str}, model: {self.model_name}")
+            # Check for sensitive_words_detected error - don't retry
+            if "sensitive_words_detected" in error_str.lower():
+                raise NonRetryableError(f"[SENSITIVE_WORDS_DETECTED] {error_str}")
             raise
     
     def generate(self, question: str) -> GeneratorOutput:
@@ -349,7 +358,7 @@ class MultimodalGenerator(DirectGenerator):
     @retry(
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=2, max=100),
-        retry=retry_if_exception_type((Exception,)),
+        retry=retry_if_not_exception_type(NonRetryableError),
         before_sleep=lambda retry_state: MultimodalGenerator._log_retry(None, retry_state)
     )
     def _generate_multimodal(self, question: str, images: Optional[List[str]] = None) -> GeneratorOutput:
@@ -409,12 +418,15 @@ class MultimodalGenerator(DirectGenerator):
             return result
 
         except Exception as e:
+            error_str = str(e)
             # Check for specific image limit error and reinitialize client for SFE and intern-S1
-  
             logger.warning(f"Image limit reached for model {self.model_name}, reinitializing client")
             self._initialize_client()
-            
-            logger.error(f"Error in MultimodalGenerator._generate_multimodal: {str(e)}, model: {self.model_name}")
+
+            logger.error(f"Error in MultimodalGenerator._generate_multimodal: {error_str}, model: {self.model_name}")
+            # Check for sensitive_words_detected error - don't retry
+            if "sensitive_words_detected" in error_str.lower():
+                raise NonRetryableError(f"[SENSITIVE_WORDS_DETECTED] {error_str}")
             raise
     
     def generate_multimodal(self, question: str, images: Optional[List[str]] = None) -> GeneratorOutput:
@@ -484,7 +496,7 @@ class EmbeddingGenerator(DirectGenerator):
     @retry(
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=2, max=100),
-        retry=retry_if_exception_type((Exception,)),
+        retry=retry_if_not_exception_type(NonRetryableError),
         before_sleep=lambda retry_state: EmbeddingGenerator._log_retry(None, retry_state)
     )
     def _generate_embedding(self, text: str) -> EmbeddingOutput:
@@ -514,7 +526,11 @@ class EmbeddingGenerator(DirectGenerator):
             return result
 
         except Exception as e:
-            logger.error(f"Error in EmbeddingGenerator._generate_embedding: {str(e)}, model: {self.model_name}")
+            error_str = str(e)
+            logger.error(f"Error in EmbeddingGenerator._generate_embedding: {error_str}, model: {self.model_name}")
+            # Check for sensitive_words_detected error - don't retry
+            if "sensitive_words_detected" in error_str.lower():
+                raise NonRetryableError(f"[SENSITIVE_WORDS_DETECTED] {error_str}")
             raise
 
     def generate_embedding(self, text: str) -> EmbeddingOutput:

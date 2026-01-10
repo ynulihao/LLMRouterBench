@@ -1,110 +1,139 @@
 <div align="center">
 
-<img src="assets/logo.png" width="160" alt="OpenRouterBench">
+<img src="assets/logo.png" width="160" alt="LLMRouterBench">
 
-# OpenRouterBench
+# LLMRouterBench
 
-### A One-Stop Benchmark and Solution Suite for LLM Routing
+### A Massive Benchmark and Unified Framework for LLM Routing
+
+[English](README.md) | [中文](README_zh.md)
 
 ![Paper](https://img.shields.io/badge/Paper-Coming%20Soon-red.svg)
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg)](https://huggingface.co/datasets/NPULH/OpenRouterBench)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg)](https://huggingface.co/datasets/NPULH/LLMRouterBench)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)]()
 
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#results">Results</a> ·
+  <a href="#installation">Installation</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#datasets">Datasets</a> ·
+  <a href="#model-pools">Model Pools</a> ·
+  <a href="#citation">Citation</a>
+</p>
 
 </div>
 
 ---
+
+## Overview
 
 <div align="center">
-<img src="assets/framework.png" width="95%" alt="Framework">
+
+**33 models | 21+ datasets | 10 routing algorithms | 400K+ instances | ~1.8B tokens**
+
 </div>
 
-<br>
+LLMRouterBench is a large-scale benchmark and unified framework for LLM routing. It consolidates standardized outputs across 21 datasets and 33 models, supports both performance-only and performance-cost routing, and provides adapters for 10 representative routing baselines.
 
-## 🌟 Highlights
-**OpenRouterBench provides high-quality inference data collected with nearly $3,000 and hundreds of GPU-hours, including:**
+<div align="center">
+<img src="assets/PPT_fig1.png" width="95%" alt="LLMRouterBench Overview">
+</div>
 
-- Covering **25+ diverse and challenging datasets (e.g., HLE, SimpleQA, SWE-Bench)** across multiple domains.
-- Including both **20 lightweight ~7B models (e.g., Qwen3-8B, DeepSeek-R1-0528-Qwen3-8B)** and **13 flagship models (e.g., GPT-5, Gemini-2.5-Pro)**.
-- Providing **inference costs from OpenRouter** for all flagship models, including both USD and tokens.
-- Offering a **unified, plug-and-play framework** for fair cross-method comparisons.
-- Integrating **nine published routing algorithms** and supporting evaluation of commercial routing services such as OpenRouter.
-- Supporting **both performance and performance-cost routing paradigms**.
-- Releasing **complete data** with per-prompt, per-model predictions and evaluations.
+### What's Included
 
-<!-- Convert assets/framework.pdf to assets/framework.png -->
-<br>
+- **Two Routing Paradigms**: **Performance-oriented**  | **Performance-Cost** tradeoff
+- **Modular Architecture**: **Collector** (unified LLM API) → **Evaluator** (dataset-specific scoring) → **Adaptor** (algorithm-specific formatting)
+- **State-of-the-Art Model Pools**: 20 **lightweight** ~7B LLMs (Qwen3-8B, DS-Qwen3, NVIDIA-Nemo, etc.) + 13 **flagship** LLMs from 8 providers (GPT-5, Gemini-2.5-Pro, Claude-4, DeepSeek-V3.1, etc.)
+- **Challenging & Diverse Datasets**: **Math** (AIME, LiveMathBench), **Code** (LiveCodeBench, SWE-Bench), **Logic** (BBH, KORBench), **Knowledge** (HLE, SimpleQA), **Affective** (EmoryNLP, MELD), **Instruction Following** (ArenaHard), **Tool Use** (τ²-Bench)
+- **Representative Routing Baselines**: RouterDC (NeurIPS'24), EmbedLLM (ICLR'25), MODEL-SAT (AAAI'25), Avengers (AAAI'26), HybridLLM (ICLR'24), FrugalGPT (TMLR'24), RouteLLM (ICLR'25), GraphRouter (ICLR'25), **Avengers-Pro** (DAI'25 Best Paper), OpenRouter
+- **Substantial Data Collection Cost**: ~1K GPU hours + $3000 API spend
 
-
-
-## 🚀 Installation
-
-```bash
-git clone https://github.com/ynulihao/OpenRouterBench.git
-cd OpenRouterBench
-pip install -r requirements.txt
-```
+- **Standardized Data Fields** (per instance): `origin_query`, `prompt`, `prediction(raw output)`, `ground_truth`, `score`, `prompt_tokens`, `completion_tokens`, `cost`
 
 ---
 
-## ⚙️ Configurations
+## Key Findings
 
-OpenRouterBench supports two routing paradigms with corresponding configuration files:
+### Performance-Oriented Setting
 
-| Setting | Description | Collector Config | Adaptor Config |
-|:---|:---|:---|:---|
-| **Performance** | 20 lightweight models (~7B) | `config/data_collector_small_model_config.yaml` | `config/baseline_config.yaml` |
-| **Performance-Cost** | 13 flagship models with cost | `config/data_collector_proprietary_model_config.yaml` | `config/baseline_config_performance_cost.yaml` |
+**No single model rules every domain; models exhibit complementary strengths.** As shown below, mathematics benchmarks are led by models like Intern-S1-mini or Qwen3-8B, code benchmarks by Qwen-Coder or Fin-R1, confirming the central premise of LLM routing.
 
----
+<div align="center">
+<img src="assets/Figure8-perf-main-1-row.png" width="95%" alt="Model Performance Across Domains">
+</div>
 
-## 🧩 Core Components
+**Top routing methods achieve comparable performance, but a significant gap to Oracle remains.** We compare routing methods against three baselines: **Random** (randomly selects a model), **Best Single** (single model with highest average accuracy), and **Oracle** (always selects the best model per query—theoretical upper bound). Key metrics include:
+- **AvgAcc**: Average accuracy across all datasets
+- **Gain@R / Gain@B**: Relative improvement over Random / Best Single
+- **Gap@O**: Gap to Oracle (lower is better)
 
-OpenRouterBench provides a modular three-component architecture:
+Despite methodological differences, leading routers (EmbedLLM, GraphRouter, MODEL-SAT, Avengers) yield similar results. Notably, Avengers achieves this without neural-network training. The proximity to **Dataset Oracle** (which selects the best model per dataset, shown as hatched bars) suggests that routing gains largely stem from capturing coarse-grained domain structure. However, a significant Gap@O remains due to **model-recall failures**—when only a few models answer correctly, routers often fail to select them.
+
+<div align="center">
+<img src="assets/Figure7-perf-metrics-03.png" width="95%" alt="Performance Metrics">
+</div>
+
+### Performance-Cost Setting
+
+**Effective routing achieves significant gains, but not all routers succeed.** We measure performance-cost tradeoffs using:
+- **PerfGain**: Best achievable performance improvement over Best Single (at highest-accuracy configuration)
+- **CostSave**: Maximal cost reduction while maintaining Best Single's accuracy
+- **Pareto frontier**: The set of optimal configurations where no method is simultaneously cheaper and more accurate
+- **ParetoDist**: Average distance to Pareto frontier (smaller is better)
+
+Top methods achieve up to 4% PerfGain and 31.7% CostSave. However, some routers (including commercial ones like OpenRouter) fail to outperform the Best Single. Avengers-Pro dominates the Pareto frontier with near-zero ParetoDist.
 
 <table>
 <tr>
-<th width="33%">🔌 Collector</th>
-<th width="33%">🔍 Evaluator</th>
-<th width="33%">🔀 Adaptor</th>
-</tr>
-<tr>
-<td valign="top">
-
-Unified API interface to LLMs:
-- Caching & retries
-- Cost tracking
-- Token counting
-
-[Documentation →](data_collector/README.md)
-
+<td width="50%">
+<div align="center">
+<img src="assets/Figure10-2-PanelC.png" width="100%" alt="Performance Gains and Cost Savings">
+<br>
+<sub>PerfGain and CostSave vs. GPT-5.</sub>
+</div>
 </td>
-<td valign="top">
-
-Dataset-specific evaluation for 25+ benchmarks:
-- Math: AIME, MATH500
-- Code: HumanEval, MBPP
-- Knowledge: MMLU-Pro, GPQA
-
-[Documentation →](evaluation/README.md)
-
-</td>
-<td valign="top">
-
-Format conversion for 8 routing algorithms:
-
-RouterDC, EmbedLLM, GraphRouter, Avengers-Pro, HybridLLM, FrugalGPT, RouteLLM, MODEL-SAT
-
-[Documentation →](baselines/README.md)
-
+<td width="50%">
+<div align="center">
+<img src="assets/Figure11-1-ParetoDist.png" width="100%" alt="Pareto Frontier">
+<br>
+<sub>Accuracy vs. cost with Pareto frontier.</sub>
+</div>
 </td>
 </tr>
 </table>
 
+> For more findings (embedding ablations, model pool scaling, latency analysis, etc.), please refer to our paper.
+
+<details>
+<summary><b>Original Data Tables</b></summary>
+
+<div align="center">
+<img src="assets/Table6.png" width="95%" alt="Table 6: Performance Setting">
+</div>
+
+<div align="center">
+<img src="assets/Table9.png" width="95%" alt="Table 9: Performance-Cost Setting">
+</div>
+
+<div align="center">
+<img src="assets/Table10.png" width="95%" alt="Table 10: Inference Costs">
+</div>
+
+</details>
+
 ---
 
-## 🎯 Quick Start
+## Installation
+
+```bash
+git clone https://github.com/ynulihao/LLMRouterBench.git
+cd LLMRouterBench
+pip install -r requirements.txt
+```
+
+## Quick Start
 
 <table>
 <tr>
@@ -154,107 +183,77 @@ python -m baselines.AvengersPro.simple_cluster_router \
 
 ---
 
-## 📄 Data Format
 
-<details>
-<summary><b>Result File Structure</b></summary>
 
-Results are stored in JSON format at `results/bench/<dataset>/<split>/<model>/<timestamp>.json`:
+## Configurations
 
-```json
-{
-  "performance": 0.85,
-  "time_taken": 120.5,
-  "prompt_tokens": 50000,
-  "completion_tokens": 20000,
-  "cost": 0.15,
-  "counts": 100,
-  "records": [
-    {
-      "index": 1,
-      "origin_query": "What is the sum of 2+2?",
-      "prompt": "Question: What is the sum of 2+2?\nAnswer:",
-      "prediction": "4",
-      "ground_truth": "4",
-      "score": 1.0,
-      "prompt_tokens": 15,
-      "completion_tokens": 5,
-      "cost": 0.0001,
-      "raw_output": "The sum of 2+2 is 4."
-    }
-  ]
-}
-```
+LLMRouterBench supports two routing paradigms with corresponding configuration files:
 
-</details>
+| Setting | Description | Collector Config | Adaptor Config |
+|:---|:---|:---|:---|
+| **Performance** | 20 lightweight models (~7B) | `config/data_collector_small_model_config.yaml` | `config/baseline_config.yaml` |
+| **Performance-Cost** | 13 flagship models with cost | `config/data_collector_proprietary_model_config.yaml` | `config/baseline_config_performance_cost.yaml` |
 
-<details>
-<summary><b>Data Download</b></summary>
+## Core Components
 
-Download pre-collected benchmark results:
+LLMRouterBench provides a modular three-component architecture:
 
-**Baidu Netdisk：** [bench-release.tar.gz](https://pan.baidu.com/s/1bfa_eX3bhuo7wgNlD_dbpA?pwd=mmbf) (code：`mmbf`)
+<div align="center">
+<img src="assets/figure2-framework.png" width="95%" alt="Framework Architecture">
+</div>
 
-**Google Drive：** [bench-release.tar.gz](https://drive.google.com/file/d/12pupoZDjqziZ2JPspH60MCC8fdXWgnX1/view?usp=drive_link)
+<table>
+<tr>
+<th width="33%">Collector</th>
+<th width="33%">Evaluator</th>
+<th width="33%">Adaptor</th>
+</tr>
+<tr>
+<td valign="top">
 
-**Hugging Face：** [bench-release.tar.gz](https://huggingface.co/datasets/NPULH/OpenRouterBench)
+Unified API interface to LLMs:
+- Caching & retries
+- Cost tracking
+- Token counting
 
-```bash
-# Extract to results directory
-tar xzf bench.tar.gz
-```
+[Documentation](data_collector/README.md)
 
-Directory structure after extraction:
-```
-results/
-└── bench/
-    ├── aime/
-    ├── bbh/
-    ├── humaneval/
-    ├── mmlu_pro/
-    └── ...
-```
+</td>
+<td valign="top">
 
-See [results/download.md](results/download.md) for details.
+Dataset-specific evaluation for 21+ benchmarks:
+- Dataset-Specific Modules
+- Diverse Scoring logic (Regex Matching, LLM-based Judgement)
+- **New**: More challenging datasets (FrontierScience, SGIBench, SFE) and multimodal support
 
-</details>
+[Documentation](evaluation/README.md)
 
-<details>
-<summary><b>Data Viewer Example</b></summary>
+</td>
+<td valign="top">
 
-```python
-from baselines import BaselineDataLoader, BaselineAggregator
+Format conversion for 10 routing algorithms:
+- Algorithm-Specific Inputs
+- Consistent Train/Test Splits
+- Support for ID/OOD Settings
 
-loader = BaselineDataLoader('config/baseline_config.yaml')
-records = loader.load_all_records()
+[Documentation](baselines/README.md)
 
-test_mode = False
-score_as_percent = True
-train_ratio = 0.7
-random_seed = 3407
+</td>
+</tr>
+</table>
 
-agg = BaselineAggregator(records, data_loader=loader)
-agg.print_summary_tables(
-    score_as_percent=score_as_percent,
-    test_mode=test_mode,
-    random_seed=random_seed,
-    train_ratio=train_ratio,
-)
+### Customization
 
-agg.save_summary_tables_to_excel(
-    output_file='small_models_total.xlsx',
-    score_as_percent=score_as_percent,
-    test_mode=test_mode,
-    train_ratio=train_ratio,
-    random_seed=random_seed
-)
-```
-
-</details>
-
+| Extension | Steps |
+|:---|:---|
+| **Add New Model** | 1. Add model config to `config/data_collector_*.yaml` 2. Run collector to generate results |
+| **Add New Dataset** | 1. Create evaluator in `evaluation/` 2. Register in config files |
+| **Add New Baseline** | 1. Copy algorithm to `baselines/` 2. Implement an adaptor in `baselines/adaptors/` |
 ---
 
-## 📊 Datasets
+## Datasets
+
+LLMRouterBench includes 21 unique datasets across two settings.
 
 <details>
 <summary><b>Performance Setting (15 Datasets)</b></summary>
@@ -292,14 +291,12 @@ agg.save_summary_tables_to_excel(
 | | HLE | HLE | 2158 | LLM as judge, 0-shot |
 | | MMLU-Pro | MP. | 3000 | Accuracy, 0-shot |
 | | SimpleQA | SQA. | 4326 | LLM as judge, 0-shot |
-| **Instruction** | ArenaHard | AHARD. | 750 | LLM as judge, 0-shot |
-| **Agentic** | τ²-Bench | TAU2. | 278 | Success Rate, 0-shot |
+| **Instruction Following** | ArenaHard | AHARD. | 750 | LLM as judge, 0-shot |
+| **Tool Use** | τ²-Bench | TAU2. | 278 | Success Rate, 0-shot |
 
 </details>
 
----
-
-## 🤖 Model Pools
+## Model Pools
 
 <details>
 <summary><b>Performance Setting (20 Models)</b></summary>
@@ -352,82 +349,125 @@ agg.save_summary_tables_to_excel(
 
 ---
 
-## 📈 Model Performance on Datasets
+## Data
 
-### Routing for Performance Setting
+LLMRouterBench stores standardized JSON records under `results/bench/` and provides download bundles for pre-collected results.
 
-Performance of 20 lightweight ~7B models across 15 datasets spanning Mathematics, Code, Logic, Knowledge, and Affective domains. Deep red and light red highlight best and second-best results.
+### Data Download
 
-<div align="center">
-<img src="assets/Table6.png" width="95%" alt="Table 6: Model Performance - Performance Setting">
-</div>
-
-### Routing for Performance-Cost Tradeoff Setting
-
-Performance of 13 flagship models on 10 datasets covering Mathematics, Code, Knowledge, Instruction Following, and Agentic tasks.
+Download pre-collected benchmark results:
 
 <div align="center">
-<img src="assets/Table9.png" width="95%" alt="Table 9: Model Performance - Performance-Cost Setting">
+<table>
+<tr>
+<td align="center">
+<strong>Baidu Netdisk</strong><br>
+<a href="https://pan.baidu.com/s/1bfa_eX3bhuo7wgNlD_dbpA?pwd=mmbf">bench-release.tar.gz</a><br>
+<sub>code: mmbf</sub>
+</td>
+<td align="center">
+<strong>Google Drive</strong><br>
+<a href="https://drive.google.com/file/d/12pupoZDjqziZ2JPspH60MCC8fdXWgnX1/view?usp=drive_link">bench-release.tar.gz</a>
+</td>
+<td align="center">
+<strong>Hugging Face</strong><br>
+<a href="https://huggingface.co/datasets/NPULH/LLMRouterBench">bench-release.tar.gz</a>
+</td>
+</tr>
+</table>
 </div>
 
-<br>
+```bash
+# Extract to results directory
+tar xzf bench-release.tar.gz
+```
 
-Inference cost comparison across models and datasets ($/1M tokens). Shows the cost heterogeneity that enables cost-aware routing.
+Directory structure after extraction:
+```
+results/
+└── bench/
+    ├── aime/
+    ├── bbh/
+    ├── humaneval/
+    ├── mmlu_pro/
+    └── ...
+```
 
-<div align="center">
-<img src="assets/Table10.png" width="95%" alt="Table 10: Model Inference Costs">
-</div>
+See [results/download.md](results/download.md) for details.
+
+<details>
+<summary><b>Result File Structure</b></summary>
+
+Results are stored in JSON format at `results/bench/<dataset>/<split>/<model>/<timestamp>.json`:
+
+```json
+{
+  "performance": 0.85,
+  "time_taken": 120.5,
+  "prompt_tokens": 50000,
+  "completion_tokens": 20000,
+  "cost": 0.15,
+  "counts": 100,
+  "records": [
+    {
+      "index": 1,
+      "origin_query": "What is the sum of 2+2?",
+      "prompt": "Question: What is the sum of 2+2?\nAnswer:",
+      "prediction": "4",
+      "ground_truth": "4",
+      "score": 1.0,
+      "prompt_tokens": 15,
+      "completion_tokens": 5,
+      "cost": 0.0001,
+      "raw_output": "The sum of 2+2 is 4."
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary><b>Data Viewer Example</b></summary>
+
+```python
+from baselines import BaselineDataLoader, BaselineAggregator
+
+loader = BaselineDataLoader('config/baseline_config.yaml')
+records = loader.load_all_records()
+
+test_mode = False
+score_as_percent = True
+train_ratio = 0.7
+random_seed = 3407
+
+agg = BaselineAggregator(records, data_loader=loader)
+agg.print_summary_tables(
+    score_as_percent=score_as_percent,
+    test_mode=test_mode,
+    random_seed=random_seed,
+    train_ratio=train_ratio,
+)
+
+agg.save_summary_tables_to_excel(
+    output_file='small_models_total.xlsx',
+    score_as_percent=score_as_percent,
+    test_mode=test_mode,
+    train_ratio=train_ratio,
+    random_seed=random_seed
+)
+```
+
+</details>
 
 ---
 
-## 🔬 Experimental Results
-
-### Performance-Oriented Routing
-
-The table below shows routing performance metrics across different methods:
-
-- **Acc**: Overall accuracy averaged across all datasets.
-- **ImpRand**: an improvement over Random Router, a baseline that uniformly selects models.
-- **ImpMax**: an improvement over Max Expert, a hindsight baseline that, for each dataset, selects the single model achieving the highest accuracy on that dataset and then uses only this model for all instances in that dataset.
-- **OracleGap**: gap to Oracle, an instance-level upper bound that always picks the best available model for each query.
-
-**Key Findings**: Routers nearly match the Max Expert baseline but remain far below the Oracle, indicating substantial room for improvement in instance-level routing.
-
-<div align="center">
-<img src="assets/Table7.png" width="70%" alt="Table 7: Performance Metrics">
-</div>
-
-### Cost-Aware Routing
-
-Performance-cost tradeoff metrics for routing methods:
-
-- **PerfGain**: Maximum performance improvement over the best single model.
-- **CostSave**: Cost reduction achieved while maintaining comparable accuracy to the best single model.
-- **ParetoRatio**: How often a method dominates competing methods (higher is better).
-- **ParetoDist**: Average distance to the Pareto frontier (lower is better).
-
-**Key Findings**: Routing methods achieve comparable accuracy to top models at significantly reduced inference costs, yet gaps to Max Expert and Oracle remain.
-
-<div align="center">
-<img src="assets/Table8.png" width="70%" alt="Table 8: Cost-Aware Routing Results">
-</div>
-
-### Performance-Cost Tradeoffs
-
-Visualization of accuracy vs. cost across all routing methods and base models. Panel A shows the Pareto frontier, while Panel B quantifies performance gains and cost savings relative to best single model (GPT-5).
-
-<div align="center">
-<img src="assets/Figure3.png" width="95%" alt="Figure 3: Performance-Cost Tradeoffs">
-</div>
-
----
-
-## 🗂️ Project Structure
+## Project Structure
 
 ```
-OpenRouterBench/
+LLMRouterBench/
 ├── data_collector/     # Collector module
-├── evaluation/         # Evaluator (25+ datasets)
+├── evaluation/         # Evaluator (21 datasets)
 ├── baselines/          # Adaptor & routing algorithms
 ├── generators/         # Model API interface
 ├── common/cache/       # Caching system
@@ -438,23 +478,24 @@ OpenRouterBench/
 
 ## 🗓️ Roadmap
 
-OpenRouterBench is evolving to better support the research community:
+**Recent Updates**
+- ✅ Integrated three challenging benchmarks (FrontierScience, SGIBench, SFE)
+- ✅ Extended support for multimodal routing evaluation
 
-- **Research Publication**: An academic paper describing OpenRouterBench will be released.
-- **Expanded Model Evaluations**: Additional benchmarks of flagship models will be provided.
-- **Broader Dataset Coverage**: More datasets across diverse domains will be integrated.
+**Long-term Goals**
+- Broader model coverage
+- Expanded benchmark suite
+- Additional baseline methods
+- Extended routing paradigms
 
----
-
-## 📚 Related Work
+## Related Work
 
 ### Comparison with Existing Routing Benchmarks
 
 <div align="center">
 <img src="assets/Table1_2.png" width="95%" alt="Comparison with Existing Routing Benchmarks">
-</div>
-
 <br>
+</div>
 
 Existing routing benchmarks face several limitations:
 
@@ -463,18 +504,18 @@ Existing routing benchmarks face several limitations:
 - **FusionFactory**: Benchmarks open-source models with estimated costs.
 - **RouterArena**: Uses inconsistent model pools across routers, undermining fair comparison and lacking per-prompt, per-model data.
 
-## 📝 Citation
+## Citation
 
-If you find OpenRouterBench useful, please cite our paper:
+If you find LLMRouterBench useful, please cite our paper:
 ```bibtex
-@article{openrouterbench,
-  title={OpenRouterBench: A Massive Benchmark for LLM Routing},
-  author={Li, Hao and Zhang, Yiqun and Wang, Chenxu and Guo, Zhaoyan and Chen, Jianhao and Zhang, Hangfan and Tang, Shengji and Zhang, Qiaosheng and Ye, Peng and Chen, Yang and Bai, Lei and Wang, Zhen and Hu, Shuyue},
+@article{llmrouterbench,
+  title={LLMRouterBench: A Massive Benchmark and Unified Framework for LLM Routing},
+  author={Li, Hao and Zhang, Yiqun and Guo, Zhaoyan and Wang, Chenxu and Tang, Shengji and Zhang, Qiaosheng and Yang, Chen and Qi, BiQing and Ye, Peng and Bai, Lei and Wang, Zhen and Hu, Shuyue},
   note={Coming soon},
   year={2025}
 }
 ```
-This work is part of our series of studies on LLM routing; if you’re interested, please refer to and cite:
+This work is part of our series of studies on LLM routing; if you're interested, please refer to and cite:
 ```bibtex
 @inproceedings{zhang2025avengers,
   title        = {The Avengers: A Simple Recipe for Uniting Smaller Language Models to Challenge Proprietary Giants},
@@ -513,8 +554,8 @@ This work is part of our series of studies on LLM routing; if you’re intereste
 
 <div align="center">
 
-**OpenRouterBench** — Advancing LLM Routing Research
+**LLMRouterBench** — Advancing LLM Routing Research
 
-[Report Issue](https://github.com/ynulihao/OpenRouterBench/issues) · [Request Feature](https://github.com/ynulihao/OpenRouterBench/issues)
+[Report Issue](https://github.com/ynulihao/LLMRouterBench/issues) · [Request Feature](https://github.com/ynulihao/LLMRouterBench/issues)
 
 </div>

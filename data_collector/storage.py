@@ -35,6 +35,7 @@ class BenchmarkResult:
     split: str
     records: List[RecordResult]
     demo: bool = False
+    extra_metrics: Dict[str, Any] = field(default_factory=dict)  # Aggregated extra metrics
 
 
 class ResultsStorage:
@@ -81,6 +82,7 @@ class ResultsStorage:
             "dataset_name": result.dataset_name,
             "split": result.split,
             "demo": result.demo,
+            "extra_metrics": result.extra_metrics,
             "data_fingerprint": data_fingerprint,
             "records": [
                 {

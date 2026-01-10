@@ -266,3 +266,17 @@ acl_latex.pdf
 
 bench-release
 bench-release.tar.gz
+
+paper/
+# Official SGI-Bench repo (submodule)
+SGI-Bench/
+mf_model.pt
+baselines/RouteLLm/checkpoints
+baselines/AvengersPro/multi_view_cluster_router.py
+results/bench_multiturn
+results/embedllm_mf_multiturn
+results/routerdc_multiturn
+results/inference
+
+# SGI-Bench runner script (contains local config, use run_sgibench.sh.example as template)
+run_sgibench.sh

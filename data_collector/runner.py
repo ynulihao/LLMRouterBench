@@ -191,8 +191,11 @@ class BenchmarkRunner:
             
             # 6. Calculate aggregated statistics
             performance, total_prompt_tokens, total_completion_tokens, total_cost = self._calculate_aggregates(records)
-            
-            # 7. Create result object
+
+            # 7. Calculate extra metrics (aggregated from record extra_fields)
+            extra_metrics = self._calculate_extra_metrics(records, plan.dataset_id)
+
+            # 8. Create result object
             result = BenchmarkResult(
                 performance=performance,
                 time_taken=time.time() - start_time,
@@ -204,13 +207,19 @@ class BenchmarkRunner:
                 dataset_name=plan.dataset_id,
                 split=plan.split,
                 demo=self.config.run.demo_mode,
-                records=records
+                records=records,
+                extra_metrics=extra_metrics
             )
-            
-            # 8. Save result
+
+            # 9. Save result
             self.storage.save_result(result, plan.dataset_id, plan.split, plan.model_name, data_fingerprint)
 
             logger.info(f"Completed run {plan.run_key}: {performance:.3f} performance")
+
+            # 对 SGI-Bench 数据集输出额外指标汇总
+            if extra_metrics:
+                self._log_extra_metrics_summary(extra_metrics, plan.dataset_id)
+
             return result
             
         except Exception as e:
@@ -256,13 +265,16 @@ class BenchmarkRunner:
                 prediction = eval_result.get('prediction', '')
                 ground_truth = eval_result.get('ground_truth', '')
 
-                # Extract extra fields from raw response if configured
-                extra_fields = {}
+                # Extract extra fields from eval_result (除 is_correct/prediction/ground_truth 外的所有字段)
+                extra_fields = {k: v for k, v in eval_result.items()
+                                if k not in ('is_correct', 'prediction', 'ground_truth')}
+
+                # 如果有 extract_fields 配置，再从 raw_response 提取并合并
                 if model_config and model_config.extract_fields and gen_output.raw_response:
-                    extra_fields = extract_extra_fields(
+                    extra_fields.update(extract_extra_fields(
                         gen_output.raw_response,
                         model_config.extract_fields
-                    )
+                    ))
 
                 return RecordResult(
                     index=index + 1,  # 1-based indexing
@@ -348,4 +360,88 @@ class BenchmarkRunner:
             if model.name == model_name:
                 return model
         return None
-    
+
+    def _calculate_extra_metrics(self, records: List[RecordResult], dataset_id: str) -> Dict[str, Any]:
+        """
+        Calculate aggregated extra metrics from record extra_fields.
+
+        For SGI-Bench datasets, calculates specific metrics.
+        For other datasets, aggregates all numeric fields.
+        """
+        if not records:
+            return {}
+
+        # 收集所有 extra_fields
+        all_extra = [r.extra_fields for r in records if r.extra_fields]
+        if not all_extra:
+            return {}
+
+        dataset_lower = dataset_id.lower()
+        metrics = {}
+
+        # SGI-Bench 特定指标
+        if "sgibench" in dataset_lower:
+            if "deepresearch" in dataset_lower:
+                metrics["exact_match"] = sum(e.get("exact_match", 0) for e in all_extra) / len(all_extra)
+                metrics["step_level_acc"] = sum(e.get("step_level_acc", 0) for e in all_extra) / len(all_extra)
+
+            elif "dryexperiment" in dataset_lower:
+                metrics["PassAll@5"] = sum(e.get("PassAll@5", 0) for e in all_extra) / len(all_extra)
+                metrics["PassAll@3"] = sum(e.get("PassAll@3", 0) for e in all_extra) / len(all_extra)
+                metrics["PassAll@1"] = sum(e.get("PassAll@1", 0) for e in all_extra) / len(all_extra)
+                metrics["SER"] = sum(e.get("SER", 0) for e in all_extra) / len(all_extra)
+                # AET 只统计有效值 (>0)
+                valid_aet = [e.get("AET", -1) for e in all_extra if e.get("AET", -1) > 0]
+                metrics["AET"] = sum(valid_aet) / len(valid_aet) if valid_aet else -1
+
+            elif "wetexperiment" in dataset_lower:
+                metrics["action_sequence_similarity"] = sum(e.get("action_sequence_similarity", 0) for e in all_extra) / len(all_extra)
+                metrics["parameter_accuracy"] = sum(e.get("parameter_accuracy", 0) for e in all_extra) / len(all_extra)
+                metrics["final_score"] = sum(e.get("final_score", 0) for e in all_extra) / len(all_extra)
+
+            elif "ideageneration" in dataset_lower:
+                metrics["final_score"] = sum(e.get("final_score", 0) for e in all_extra) / len(all_extra)
+                metrics["effectiveness"] = sum(e.get("effectiveness", 0) for e in all_extra) / len(all_extra)
+                metrics["novelty"] = sum(e.get("novelty", 0) for e in all_extra) / len(all_extra)
+                metrics["detailedness"] = sum(e.get("detailedness", 0) for e in all_extra) / len(all_extra)
+                metrics["feasibility"] = sum(e.get("feasibility", 0) for e in all_extra) / len(all_extra)
+
+        else:
+            # 通用逻辑：聚合所有数值型字段
+            numeric_fields = {}
+            for extra in all_extra:
+                for key, value in extra.items():
+                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                        if key not in numeric_fields:
+                            numeric_fields[key] = []
+                        numeric_fields[key].append(value)
+
+            for key, values in numeric_fields.items():
+                if values:
+                    metrics[key] = sum(values) / len(values)
+
+        return metrics
+
+    def _log_extra_metrics_summary(self, extra_metrics: Dict[str, Any], dataset_id: str):
+        """输出额外指标汇总日志"""
+        if not extra_metrics:
+            return
+
+        dataset_lower = dataset_id.lower()
+
+        # SGI-Bench 格式化输出
+        if "sgibench" in dataset_lower:
+            if "deepresearch" in dataset_lower:
+                logger.info(f"  SGI-Bench metrics: exact_match={extra_metrics.get('exact_match', 0):.3f}, step_level_acc={extra_metrics.get('step_level_acc', 0):.3f}")
+            elif "dryexperiment" in dataset_lower:
+                logger.info(f"  SGI-Bench metrics: PassAll@5={extra_metrics.get('PassAll@5', 0):.3f}, PassAll@3={extra_metrics.get('PassAll@3', 0):.3f}, PassAll@1={extra_metrics.get('PassAll@1', 0):.3f}, SER={extra_metrics.get('SER', 0):.3f}")
+            elif "wetexperiment" in dataset_lower:
+                logger.info(f"  SGI-Bench metrics: action_sim={extra_metrics.get('action_sequence_similarity', 0):.3f}, param_acc={extra_metrics.get('parameter_accuracy', 0):.3f}, final={extra_metrics.get('final_score', 0):.3f}")
+            elif "ideageneration" in dataset_lower:
+                logger.info(f"  SGI-Bench metrics: final={extra_metrics.get('final_score', 0):.1f}, eff={extra_metrics.get('effectiveness', 0):.1f}, nov={extra_metrics.get('novelty', 0):.1f}, det={extra_metrics.get('detailedness', 0):.1f}, fea={extra_metrics.get('feasibility', 0):.1f}")
+        else:
+            # 通用输出
+            if extra_metrics:
+                metrics_str = ", ".join(f"{k}={v:.3f}" for k, v in extra_metrics.items())
+                logger.info(f"  Extra metrics: {metrics_str}")
+

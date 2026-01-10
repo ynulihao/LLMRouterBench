@@ -9,6 +9,13 @@ from evaluation.BrainTeaser import BrainTeaserEvaluator
 from evaluation.DailyDialog import DailyDialogEvaluator
 from evaluation.EmoryNLP import EmoryNLPEvaluator
 from evaluation.FinQA import FinQAEvaluator
+from evaluation.FrontierScience import FrontierScienceEvaluator
+from evaluation.SGIBench import (
+    DeepResearchEvaluator,
+    IdeaGenerationEvaluator,
+    DryExperimentEvaluator,
+    WetExperimentEvaluator
+)
 from evaluation.GPQA import GPQAEvaluator
 from evaluation.HLE import HLEEvaluator
 from evaluation.HumanEval import HumanEvalEvaluator
@@ -66,8 +73,16 @@ class Benchmark(Enum):
     DailyDialog = 'dailydialog' # Affective Computing
     StudentEval = 'studenteval' # code
     BrainTeaser = 'brainteaser' # logic
+    # science
+    FrontierScience = 'frontierscience'
+    FrontierScienceResearch = 'frontierscience-research'
     # arenahard
     ArenaHard = 'arenahard'
+    # SGI-Bench (Scientific General Intelligence)
+    SGIBenchDeepResearch = 'sgibench-deepresearch'
+    SGIBenchIdeaGeneration = 'sgibench-ideageneration'
+    SGIBenchDryExperiment = 'sgibench-dryexperiment'
+    SGIBenchWetExperiment = 'sgibench-wetexperiment'
 
   
 class EvaluatorFactory:
@@ -156,6 +171,22 @@ class EvaluatorFactory:
             return HLEEvaluator(grader_cache_config=self.grader_cache_config)
         elif task == Benchmark.ARCAGI:
             return ARCAGIEvaluator()
+        elif task == Benchmark.FrontierScience:
+            return FrontierScienceEvaluator(split='olympiad', grader_cache_config=self.grader_cache_config)
+        elif task == Benchmark.FrontierScienceResearch:
+            raise NotImplementedError(
+                "FrontierScience-research uses rubric-based scoring and requires LLM grading. "
+                "Currently only 'olympiad' split is supported."
+            )
+        # SGI-Bench
+        elif task == Benchmark.SGIBenchDeepResearch:
+            return DeepResearchEvaluator(grader_cache_config=self.grader_cache_config)
+        elif task == Benchmark.SGIBenchIdeaGeneration:
+            return IdeaGenerationEvaluator(grader_cache_config=self.grader_cache_config)
+        elif task == Benchmark.SGIBenchDryExperiment:
+            return DryExperimentEvaluator(grader_cache_config=self.grader_cache_config)
+        elif task == Benchmark.SGIBenchWetExperiment:
+            return WetExperimentEvaluator(grader_cache_config=self.grader_cache_config)
         else:
             raise ValueError(f"Invalid task: {task}")
             
